@@ -50,8 +50,23 @@ Point3D RayScene::GetColor(Ray3D ray,int rDepth,Point3D cLimit){
     RayIntersectionInfo iInfo;
     double t = group->intersect( ray, iInfo, 0.0 );
     if ( t != -1 ) {
-        return *( new Point3D( 1.0, 1.0, 1.0 ));  // TODO: Calculate actual color
+        /* ~~~~~~ Emissive & Ambient ~~~~~ */
+        Point3D i_emissive = iInfo.material->emissive;
+        Point3D i_ambient = ambient * iInfo.material->ambient;
+
+        /* ~~~~~~ Diffuse ~~~~~ */
+        Point3D i_diffuse = *(new Point3D(0.0, 0.0, 0.0));
+        for ( int i = 0; i < lightNum; i++ ) {
+            RayLight* curLight = lights[ i ];
+            i_diffuse += curLight->getDiffuse( camera->position, iInfo );
+        }
+
+        // TODO: Clamp values. Check why the whole sphere shows
+        // TODO: Negative camera positions break the ray tracer...
+        Point3D color = i_emissive + i_ambient + i_diffuse;
+        return color;
     }
+
     return background;
 }
 

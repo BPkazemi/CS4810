@@ -48,6 +48,11 @@ double RayTriangle::intersect(Ray3D ray,RayIntersectionInfo& iInfo,double mx){
         return 0;
     }
 
+    iInfo.material = material;
+    iInfo.iCoordinate = p;  
+    iInfo.normal = plane.normal;
+    iInfo.texCoordinate; // TODO: texCoordinates will be discussed in upcoming lectures
+
 	return t;
 }
 BoundingBox3D RayTriangle::setBoundingBox(void){

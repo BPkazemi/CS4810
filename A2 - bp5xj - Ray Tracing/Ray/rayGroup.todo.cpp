@@ -13,13 +13,15 @@ double RayGroup::intersect(Ray3D ray,RayIntersectionInfo& iInfo,double mx){
     bool doesIntersect = false;
 
     for( int i = 0; i < sNum; i++ ) {
-        curShape = shapes[i];
+        RayIntersectionInfo iInfoShape;
 
-        cur_t = curShape->intersect( ray, iInfo, 0 );
+        curShape = shapes[i];
+        cur_t = curShape->intersect( ray, iInfoShape, 0 );
         if ( cur_t > 0.0 and cur_t < min_t ) {
             doesIntersect = true;
             minShape = curShape;
             min_t = cur_t;
+            iInfo = iInfoShape;
         }
     }
 
