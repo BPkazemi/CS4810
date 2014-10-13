@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Babak Pourkazemi's Assignment 1 Submission</title>
+</head>
+<body>
+    <div>
+        <h1>bp5xj's Assignment 1 Submission</h1>
+        <h3>Submission Information</h3>
+        <ul>
+            <li>Name: Babak Pourkazemi</li>
+            <li>UVA Computing ID: bp5xj</li>
+            <li>Compiler: g++</li>
+            <li>Environment/platform: Ubuntu 12.04 LTS 32-bit (more details in "setup")</li>
+            <li>Number of late days used: 0</li>
+            <li>
+                Implemented sections
+                <ol>
+                    <li>(1) Noise</li>
+                    <li>(1) Brighten</li>
+                    <li>(1) Luminance</li>
+                    <li>(1) Contrast</li>
+                    <li>(1) Saturate</li>
+                    <li>(1) Crop</li>
+                    <li>(2) Quantize</li>
+                    <li>(2) Random Dither</li>
+                    <li>(2) Ordered Dither</li>
+                    <li>(2) fsDither</li>
+                    <li>(2) Blur 3x3</li>
+                    <li>(2) Edge Detection 3x3</li>
+                    <li>(1) Nearest Sample</li>
+                    <li>(1) Bilinear Sample</li>
+                    <li>(1) Gaussian Sample</li>
+                    <li>(1) Scale Nearest</li>
+                    <li>(1) Scale Bilinear</li>
+                    <li>(1) Scale Gaussian</li>
+                    <li>(2) Rotate Nearest</li>
+                    <li>(2) Rotate Bilinear</li>
+                    <li>(2) Rotate Gaussian</li>
+                    <li>(1) Art Submission</li>
+                    <li>(1) Video Submission</li>
+                    <li>Total Implemented: 32 pts</li>
+                </ol>
+                Partially Implemented 
+                <ol>
+                    <li>(1) SetAlpha and Composite</li>
+                    <li>Total Partially Implemented: 1 pt</li>
+                </ol>
+                Unimplemented 
+                <ol>
+                    <li>(1) Composite image of myself and a famous person</li>
+                    <li>(2) FunFilter</li>
+                    <li>(6) Beier Neely Morphing</li>
+                    <li>Total Unimplemented: 9 pts</li>
+                </ol>
+            </li>
+        </ul>
+
+        <h3>Setup</h2>
+        My local machine is a Macbook Air running OS X Yosemite (10.10). I used Vagrant to develop in an Ubuntu Linux environment. Details for setting up Vagrant are below. Note that Vagrant depends on VirtualBox, so VirtualBox must be installed prior to Vagrant.
+        <ol>
+            <li>Install Vagrant as detailed <a href="https://www.vagrantup.com/downloads.html">here</a></li>
+            <li>Run "vagrant init hashicorp/precise32" to get Ubuntu 12.04 LTS 32-bit</li>
+            <li>Run "vagrant up" to setup the vm</li>
+            <li>Run "vagrant ssh" to ssh into the vm</li>
+            <li>Once ssh'd, "sudo apt-get update"</li>
+            <li>Then, "sudo apt-get upgrade" (ignore any GRUB boot loader warnings by ESC'ing out)</li>
+            <li>sudo apt-get install make </li>
+            <li>sudo apt-get install g++</li>
+            <li>Run "make" to compile the Assignment1 executable (and also compile the JPEG library)</li>
+            <li>Type "exit" to leave the vm. Then type "vagrant halt" to shutdown the vm, or "vagrant destroy" to remove all traces of the vm (warning: "vagrant destroy" removes data!).</li>
+        </ol>
+
+        <h3>Notes</h2>
+        Some notes:
+        <ul>
+            <li>My Gaussian functions produce images that are slightly darker & blurrier than the sample images because of a wider radius.</li>
+            <li>In image.todo.cpp, import "float.h" to have access to FLT_MAX & FLT_MIN macros</li>
+            <li>In image.todo.cpp, import "list.h" to be able to use the "pair" data type, which is useful for representing x and y coordinates.</li>
+            <li>I made a helper function for generating a random number and quantization. These can be found near the top of image.todo.cpp</li>
+        </ul>
+        <h3>Results</h2>
+        <ol>
+            <li> Noise
+                <table border="1">
+                    <tbody><tr>
+                            <td><img src="bp5xj_HTML/yoda_noisify0.jpg" width="200"></td>
+                            <td><img src="bp5xj_HTML/yoda_noisify01.jpg" width="200"></td>
+                            <td><img src="bp5xj_HTML/yoda_noisify02.jpg" width="200"></td>
+                        </tr>
+                        <tr>
+                            <td align="center"><code>--noisify 0</code></td>
+                            <td align="center"><code>--noisify .1</code></td>
+                            <td align="center"><code>--noisify .5</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </li>
+            <li>
+                <div>Brighten</div>
+                <table border="1">
+                    <tbody><tr>
+                            <td><img src="bp5xj_HTML/yoda_bright00.jpg" width="200"></td>
+                            <td><img src="bp5xj_HTML/yoda_bright01.jpg" width="200"></td>
+                            <td><img src="bp5xj_HTML/yoda_bright02.jpg" width="200"></td>
+                        </tr>
+                        <tr>
+                            <td align="center"><code>--brighten 0.7</code></td>
+                            <td align="center"><code>--brighten 1.0</code></td>
+                            <td align="center"><code>--brighten 2.0</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </li>
+            <li>
+                <div>Luminance</div>
+                <table border="1">
+                    <tbody><tr>
+                            <td><img src="bp5xj_HTML/yoda_luminance.jpg" width="200"></td>
+                        </tr>
+                        <tr>
+                            <td align="center"><code>--gray</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </li>
+            <li>
+                <div>Contrast</div>
+                <table border="1">
+                    <tbody><tr>
+                            <td><img src="bp5xj_HTML/shrek_contrast00.jpg" width="400"></td>
+                            <td><img src="bp5xj_HTML/shrek_contrast01.jpg" width="400"></td>
+                            <td><img src="bp5xj_HTML/shrek_contrast02.jpg" width="400"></td>
+                        </tr>
+                        <tr>
+                            <td align="center"><code>--contrast 0.2</code></td>
+                            <td align="center"><code>--contrast 1.0</code></td>
+                            <td align="center"><code>--contrast 2.0</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </li>
+            <li>
+                <div>Saturate</div>
+                <table border="1">
+                    <tbody><tr>
+                            <td><img src="bp5xj_HTML/shrek_saturate00.jpg" width="400"></td>
+                            <td><img src="bp5xj_HTML/shrek_saturate01.jpg" width="400"></td>
+                            <td><img src="bp5xj_HTML/shrek_saturate02.jpg" width="400"></td>
+                        </tr>
+                        <tr>
+                            <td align="center"><code>--saturate 0.2</code></td>
+                            <td align="center"><code>--saturate 1.0</code></td>
+                            <td align="center"><code>--saturate 2.0</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </li>
+            <li>
+                <div>Crop</div>
+                <table border="1">
+                    <tbody><tr>
+                            <td><img src="bp5xj_HTML/yoda_crop.jpg" width="200"></td>
+                        </tr>
+                        <tr>
+                            <td align="center"><code>--crop 0 0 400 400</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </li>
+            <li>
+                <div>Quantize</div>
+                <table border="1">
+                    <tbody><tr>
+                            <td><img src="bp5xj_HTML/ramp_quantize00.jpg" width="200"></td>
+                            <td><img src="bp5xj_HTML/ramp_quantize01.jpg" width="200"></td>
+                        </tr>
+                        <tr>
+                            <td align="center"><code>--quantize 1</code></td>
+                            <td align="center"><code>--quantize 2</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </li>
+            <li>
+                <div>Random Dither</div>
+                <table border="1">
+                    <tbody><tr>
+                            <td><img src="bp5xj_HTML/ramp_rdither00.jpg" width="200"></td>
+                            <td><img src="bp5xj_HTML/ramp_rdither01.jpg" width="200"></td>
+                            <td><img src="bp5xj_HTML/ramp_rdither02.jpg" width="200"></td>
+                        </tr>
+                        <tr>
+                            <td align="center"><code>--rDither 1</code></td>
+                            <td align="center"><code>--rDither 2</code></td>
+                            <td align="center"><code>--rDither 4</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </li>
+            <li>
+                <div>Ordered Dither</div>
+                <table border="1">
+                    <tbody><tr>
+                            <td><img src="bp5xj_HTML/ramp_odither00.jpg" width="200"></td>
+                            <td><img src="bp5xj_HTML/ramp_odither01.jpg" width="200"></td>
+                            <td><img src="bp5xj_HTML/ramp_odither02.jpg" width="200"></td>
+                        </tr>
+                        <tr>
+                            <td align="center"><code>--oDither 1</code></td>
+                            <td align="center"><code>--oDither 2</code></td>
+                            <td align="center"><code>--oDither 4</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+            </li>
+            <li>
+                <div>fsDither</div>
+                <table border="1">
+                    <tbody><tr>
+                            <td><img src="bp5xj_HTML/ramp_fsdither00.jpg" width="200"></td>
+                            <td><img src="bp5xj_HTML/ramp_fsdither01.jpg" width="200"></td>
+                            <td><img src="bp5xj_HTML/ramp_fsdither02.jpg" width="200"></td>
+                        </tr>
+                        <tr>
+                            <td align="center"><code>--fsDither 1</code></td>
+                            <td align="center"><code>--fsdither 2</code></td>
+                            <td align="center"><code>--fsDither 4</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </li>
+            <li>
+                <div>Blur 3x3</div>
+                <table border="1">
+                    <tbody><tr>
+                            <td><img src="bp5xj_HTML/sully_blur.jpg" width="400"></td>
+                        </tr>
+                        <tr>
+                            <td align="center"><code>--blur3x3</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </li>
+            <li>
+                <div>Edge Detection 3x3<div>
+                <table border="1">
+                    <tbody><tr>
+                            <td><img src="bp5xj_HTML/sully_edge.jpg" width="400"></td>
+                        </tr>
+                        <tr>
+                            <td align="center"><code>--edges3x3</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </li>
+            <li>
+                <div>Scale Nearest</div>
+                <table border="1">
+                    <tbody><tr>
+                            <td><img src="bp5xj_HTML/stripe_scaleNearest00.jpg"></td>
+                            <td><img src="bp5xj_HTML/stripe_scaleNearest01.jpg"></td>
+                            <td><img src="bp5xj_HTML/stripe_scaleNearest02.jpg"></td>
+                        </tr>
+                        <tr>
+                            <td align="center"><code>--scaleNearest 0.5</code></td>
+                            <td align="center"><code>--scaleNearest 1.0</code></td>
+                            <td align="center"><code>--scaleNearest 2.0</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </li>
+            <li>
+                <div>Scale Bilinear</div>
+                <table border="1">
+                    <tbody><tr>
+                            <td><img src="bp5xj_HTML/stripe_scaleBilinear00.jpg"></td>
+                            <td><img src="bp5xj_HTML/stripe_scaleBilinear01.jpg"></td>
+                            <td><img src="bp5xj_HTML/stripe_scaleBilinear02.jpg"></td>
+                        </tr>
+                        <tr>
+                            <td align="center"><code>--scaleBilinear 0.5</code></td>
+                            <td align="center"><code>--scaleBilinear 1.0</code></td>
+                            <td align="center"><code>--scaleBilinear 2.0</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </li>
+            <li>
+                <div>Scale Gaussian</div>
+                <table border="1">
+                    <tbody><tr>
+                            <td><img src="bp5xj_HTML/stripe_scaleGaussian00.jpg"></td>
+                            <td><img src="bp5xj_HTML/stripe_scaleGaussian01.jpg"></td>
+                            <td><img src="bp5xj_HTML/stripe_scaleGaussian02.jpg"></td>
+                        </tr>
+                        <tr>
+                            <td align="center"><code>--scaleGaussian 0.5</code></td>
+                            <td align="center"><code>--scaleGaussian 1.0</code></td>
+                            <td align="center"><code>--scaleGaussian 2.0</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </li>
+            <li>
+                <div>Rotate Nearest</div>
+                <table border="1">
+                    <tbody><tr>
+                            <td><img src="bp5xj_HTML/stripe_rotateNearest.jpg" width="200"></td>
+                        </tr>
+                        <tr>
+                            <td align="center"><code>--rotateNearest 30</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </li>
+            <li>
+                <div>Rotate Bilinear</div>
+                <table border="1">
+                    <tbody><tr>
+                            <td><img src="bp5xj_HTML/stripe_rotateBilinear.jpg" width="200"></td>
+                        </tr>
+                        <tr>
+                            <td align="center"><code>--rotateBilinear 30</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </li>
+            <li>
+                <div>Rotate Gaussian</div>
+                <table border="1">
+                    <tbody><tr>
+                            <td><img src="bp5xj_HTML/stripe_rotateGaussian.jpg" width="200"></td>
+                        </tr>
+                        <tr>
+                            <td align="center"><code>--rotateGaussian 30</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </li>
+            <li>
+                <div>Art Submission 1 and 2 (if video doesn't play, browse to it and play it there)</div>
+                <table border="1">
+                    <tbody><tr>
+                            <td><img src="bp5xj_HTML/bp5xj.art.1.jpg" width="400"></td>
+                            <td>
+                                <video src="bp5xj_HTML/bp5xj.art.2.mp4" controls>
+                                </video>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="center"><code> Yoda art </code></td>
+                            <td align="center"><code> Yoda movie </code></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div><img src="" alt=""></div>
+            </li>
+            <li>
+                <div>Video Submission (if video doesn't play, browse to it and play it there)</div>
+                <table border="1">
+                    <tbody><tr>
+                            <td>
+                                <video src="bp5xj_HTML/bp5xj.art.2.mp4" controls>
+                                </video>
+                        </tr>
+                        <tr>
+                            <td align="center"><code>ffmpeg'd with 30 images</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </li>
+            <li>Not shown: The sampling filters (they are implicitly shown in rotation and scaling)</li>
+        </ol>
+    </div>
+</body>
+</html>
