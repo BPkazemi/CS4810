@@ -100,7 +100,7 @@ public:
 	
 	/** This method returns a unit vector that points in the same direction as the point. */
 	Point3D unit(void) const;
-	
+
 	/** This method return the negative of the point. */
 	Point3D negate(void) const;
 	/** This method return the negative of the point. */

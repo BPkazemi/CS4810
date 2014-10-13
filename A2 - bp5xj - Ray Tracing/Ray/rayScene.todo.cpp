@@ -17,13 +17,8 @@ int RayScene::Refract(Point3D v,Point3D n,double ir,Point3D& refract){
 }
 
 Ray3D RayScene::GetRay(RayCamera* camera,int i,int j,int width,int height){
-    // Old .ray camera info:
-    // #camera 0.0 10.0 10.0   0.0 -1.0 -1.0   0.0 1.0 -1.0   .523  
-    // New .ray camera info:
-    // #camera 0.0 0.0 0.0   1.0 0.0 0.0   0.0 0.0 1.0   .523  
-    // #camera 0.0 5.0 0.0   0.0 -1.0 0.0   0.0 0.0 1.0   .523  
     // TODO: Image shows too far
-    
+    // TODO: Negative camera positions break the ray tracer...
     Point3D p0 = camera->position;
     Point3D up = (camera->up).unit();
     Point3D right = (camera->right).unit();
@@ -54,16 +49,21 @@ Point3D RayScene::GetColor(Ray3D ray,int rDepth,Point3D cLimit){
         Point3D i_emissive = iInfo.material->emissive;
         Point3D i_ambient = ambient * iInfo.material->ambient;
 
-        /* ~~~~~~ Diffuse ~~~~~ */
+        /* ~~~~~~ Diffuse & Specular ~~~~~ */
         Point3D i_diffuse = *(new Point3D(0.0, 0.0, 0.0));
+        Point3D i_specular = *(new Point3D(0.0, 0.0, 0.0));
         for ( int i = 0; i < lightNum; i++ ) {
             RayLight* curLight = lights[ i ];
-            i_diffuse += curLight->getDiffuse( camera->position, iInfo );
+            Point3D curDiffuse = curLight->getDiffuse( camera->position, iInfo );
+            Point3D curSpecular = curLight->getSpecular( camera->position, iInfo );
+
+            i_diffuse += curDiffuse;
+            i_specular += curSpecular;
         }
 
-        // TODO: Clamp values. Check why the whole sphere shows
-        // TODO: Negative camera positions break the ray tracer...
-        Point3D color = i_emissive + i_ambient + i_diffuse;
+
+        // TODO: Color of square looks slightly off
+        Point3D color = i_emissive + i_ambient + i_diffuse + i_specular;
         return color;
     }
 
