@@ -27,7 +27,26 @@ Point3D RaySpotLight::getDiffuse(Point3D cameraPosition,RayIntersectionInfo& iIn
     return Point3D(0.0, 0.0, 0.0);
 }
 Point3D RaySpotLight::getSpecular(Point3D cameraPosition,RayIntersectionInfo& iInfo){
-	return Point3D();
+    double distance = (location - iInfo.iCoordinate).length();
+    Point3D L = ( location - iInfo.iCoordinate ).unit();
+    double cutOff = cos( cutOffAngle );
+
+    if ( direction.dot( -L ) > cutOff ) {
+        Point3D numer = color * ( pow(direction.dot( -L ), dropOffRate ));
+        double denom = constAtten + linearAtten*distance + quadAtten*pow(distance, 2.0);
+        Point3D i_light = numer / denom;
+
+        Point3D k_specular = iInfo.material->specular;
+        Point3D R = iInfo.normal * 2.0f * (L.dot(iInfo.normal)) - L;
+        Point3D V = ( cameraPosition - iInfo.iCoordinate ).unit();
+
+        double percent_specular = fmax( 0.0f, fmin( 1.0f, R.dot( V )));
+        double sfo = iInfo.material->specularFallOff;
+
+        Point3D i_specular = k_specular * pow(percent_specular, sfo) * i_light;
+        return i_specular;
+    }
+    return Point3D(0.0, 0.0, 0.0);
 }
 int RaySpotLight::isInShadow(RayIntersectionInfo& iInfo,RayShape* shape,int& isectCount){
 	return 0;

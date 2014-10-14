@@ -17,9 +17,8 @@ Point3D RayDirectionalLight::getDiffuse(Point3D cameraPosition,RayIntersectionIn
 Point3D RayDirectionalLight::getSpecular(Point3D cameraPosition,RayIntersectionInfo& iInfo){
     Point3D i_light = color;
     Point3D k_specular = iInfo.material->specular;
-    // Point3D L = ( location - iInfo.iCoordinate ).unit();
     Point3D L = -direction;
-    Point3D R = iInfo.normal * 2 * (L.dot(iInfo.normal)) - L;
+    Point3D R = iInfo.normal * 2.0 * (L.dot(iInfo.normal)) - L;
     Point3D V = ( cameraPosition - iInfo.iCoordinate ).unit();
 
     double percent_specular = fmax( 0.0f, fmin( 1.0f, R.dot( V )));
