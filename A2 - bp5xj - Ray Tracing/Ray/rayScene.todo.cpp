@@ -64,6 +64,9 @@ Point3D RayScene::GetColor(Ray3D ray,int rDepth,Point3D cLimit){
 
         // TODO: Color of square looks slightly off
         Point3D color = i_emissive + i_ambient + i_diffuse + i_specular;
+        color.p[0] = fmax(0.0f, fmin(1.0f, color.p[0]));
+        color.p[1] = fmax(0.0f, fmin(1.0f, color.p[1]));
+        color.p[2] = fmax(0.0f, fmin(1.0f, color.p[2]));
         return color;
     }
 
