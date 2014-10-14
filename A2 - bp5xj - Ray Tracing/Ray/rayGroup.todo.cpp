@@ -7,7 +7,6 @@
 //  Ray-tracing stuff //
 ////////////////////////
 double RayGroup::intersect(Ray3D ray,RayIntersectionInfo& iInfo,double mx){
-    // TODO: Take into account mx
     float cur_t, min_t = FLT_MAX;
     RayShape *curShape, *minShape;
     bool doesIntersect = false;
@@ -17,7 +16,12 @@ double RayGroup::intersect(Ray3D ray,RayIntersectionInfo& iInfo,double mx){
 
         curShape = shapes[i];
         cur_t = curShape->intersect( ray, iInfoShape, 0 );
-        if ( cur_t > 0.0 and cur_t < min_t ) {
+
+        bool intersectPredicate = 
+            ( mx > 0 ) ? ( cur_t > 0.0 && cur_t < min_t && cur_t < mx ) :
+                        ( cur_t > 0.0 && cur_t < min_t );
+
+        if ( intersectPredicate == true ) {
             doesIntersect = true;
             minShape = curShape;
             min_t = cur_t;

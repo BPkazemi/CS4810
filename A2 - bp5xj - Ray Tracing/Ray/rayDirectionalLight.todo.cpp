@@ -28,7 +28,14 @@ Point3D RayDirectionalLight::getSpecular(Point3D cameraPosition,RayIntersectionI
     return i_specular;
 }
 int RayDirectionalLight::isInShadow(RayIntersectionInfo& iInfo,RayShape* shape,int& isectCount){
-	return 0;
+    // TODO: Make use of isectCount
+    Point3D L = -direction;
+    Ray3D iRay = *(new Ray3D( iInfo.iCoordinate, L ));
+
+    RayIntersectionInfo dummyInfo;
+    double t = shape->intersect( iRay, dummyInfo, 0.0 );  
+    isectCount += 1;
+    return (t == -1) ? 1 : 0;
 }
 Point3D RayDirectionalLight::transparency(RayIntersectionInfo& iInfo,RayShape* shape,Point3D cLimit){
 	return Point3D(1,1,1);

@@ -36,7 +36,7 @@ Ray3D RayScene::GetRay(RayCamera* camera,int i,int j,int width,int height){
     Point3D upAmount = (p3-p1) * (((float) i + 0.5)/(float) height);
     Point3D rightAmount = (p2-p1) * (((float) j + 0.5)/(float) width); 
 
-    Point3D p = p1 + upAmount + rightAmount; 
+    Point3D p = p1 + upAmount + rightAmount; // TODO: Switch?
     Point3D vector = p - p0;
     return Ray3D( p0, vector.unit() ); 
 }
@@ -50,20 +50,27 @@ Point3D RayScene::GetColor(Ray3D ray,int rDepth,Point3D cLimit){
         Point3D i_ambient = ambient * iInfo.material->ambient;
 
         /* ~~~~~~ Diffuse & Specular ~~~~~ */
-        Point3D i_diffuse = *(new Point3D(0.0, 0.0, 0.0));
-        Point3D i_specular = *(new Point3D(0.0, 0.0, 0.0));
+        // TODO: Remove redundant calculations
+        Point3D i_diffuse_specular = *(new Point3D(0.0, 0.0, 0.0));
+        int shadow = 1;
+        int isectCount = 0;
         for ( int i = 0; i < lightNum; i++ ) {
             RayLight* curLight = lights[ i ];
             Point3D curDiffuse = curLight->getDiffuse( camera->position, iInfo );
             Point3D curSpecular = curLight->getSpecular( camera->position, iInfo );
 
-            i_diffuse += curDiffuse;
-            i_specular += curSpecular;
+            /* ~~ Shadow Term ~~ */
+            for ( int k = 0; k < group->sNum; k++ ) {
+                RayShape* curShape = group->shapes[k];
+                double curShadow = curLight->isInShadow( iInfo, curShape, isectCount );
+                if ( curShadow == 0 ) {  shadow = 0; }
+            }
+            i_diffuse_specular += (curDiffuse + curSpecular) * (double) shadow;
         }
 
 
         // TODO: Color of square looks slightly off
-        Point3D color = i_emissive + i_ambient + i_diffuse + i_specular;
+        Point3D color = i_emissive + i_ambient + (i_diffuse_specular);
         color.p[0] = fmax(0.0f, fmin(1.0f, color.p[0]));
         color.p[1] = fmax(0.0f, fmin(1.0f, color.p[1]));
         color.p[2] = fmax(0.0f, fmin(1.0f, color.p[2]));

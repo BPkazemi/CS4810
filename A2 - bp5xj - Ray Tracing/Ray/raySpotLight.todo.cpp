@@ -49,7 +49,15 @@ Point3D RaySpotLight::getSpecular(Point3D cameraPosition,RayIntersectionInfo& iI
     return Point3D(0.0, 0.0, 0.0);
 }
 int RaySpotLight::isInShadow(RayIntersectionInfo& iInfo,RayShape* shape,int& isectCount){
-	return 0;
+    // TODO: Make use of isectCount
+    Point3D L = ( location - iInfo.iCoordinate ).unit();
+    double length = ( location - iInfo.iCoordinate ).length();
+    Ray3D iRay = *(new Ray3D( iInfo.iCoordinate, L ));
+
+    RayIntersectionInfo dummyInfo;
+    double t = shape->intersect( iRay, dummyInfo, length );
+    isectCount += 1;
+    return (t == -1) ? 1 : 0;
 }
 Point3D RaySpotLight::transparency(RayIntersectionInfo& iInfo,RayShape* shape,Point3D cLimit){
 	return Point3D(1,1,1);
