@@ -19,7 +19,7 @@ double RaySphere::intersect(Ray3D ray,RayIntersectionInfo& iInfo,double mx){
     }
 
     double t_edge = sqrt( pow(radius, 2.0) - d_squared );
-    double t = fmin( t_center-t_edge, t_center+t_edge); 
+    double t = fmin( t_center-t_edge, t_center+t_edge ); 
 
     Point3D p = p0 + v*t;
 

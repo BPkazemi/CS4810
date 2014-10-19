@@ -17,8 +17,8 @@ int RayScene::Refract(Point3D v,Point3D n,double ir,Point3D& refract){
 }
 
 Ray3D RayScene::GetRay(RayCamera* camera,int i,int j,int width,int height){
-    // TODO: Image shows too far
     // TODO: Negative camera positions break the ray tracer...
+    // TODO: Changing the camera's z-position breaks the ray tracer
     Point3D p0 = camera->position;
     Point3D up = (camera->up).unit();
     Point3D right = (camera->right).unit();
@@ -26,17 +26,20 @@ Ray3D RayScene::GetRay(RayCamera* camera,int i,int j,int width,int height){
     double aspectRatio = (double) camera->aspectRatio;
     Point3D direction = (camera->direction).unit();
 
-    Point3D verticalDir = (up*tan(theta)).unit();
-    Point3D horizontalDir = (right*(tan(theta)*aspectRatio)).unit();
-    Point3D p1 = p0 + direction + verticalDir - horizontalDir;
-    Point3D p2 = p0 + direction + verticalDir + horizontalDir;
-    Point3D p3 = p0 + direction - verticalDir - horizontalDir;
-    Point3D p4 = p0 + direction - verticalDir + horizontalDir;
+    double widthAngle = camera->heightAngle * aspectRatio;
+    double alpha = widthAngle / 2.0;
+
+    Point3D verticalDir = up*tan(theta);
+    Point3D horizontalDir = right*(tan(alpha));
+    // Point3D horizontalDir = (right*(tan(theta)*aspectRatio));
+    Point3D p1 = p0 + direction - verticalDir - horizontalDir;
+    Point3D p2 = p0 + direction + verticalDir - horizontalDir;
+    Point3D p3 = p0 + direction - verticalDir + horizontalDir;
 
     Point3D upAmount = (p3-p1) * (((float) i + 0.5)/(float) height);
     Point3D rightAmount = (p2-p1) * (((float) j + 0.5)/(float) width); 
 
-    Point3D p = p1 + upAmount + rightAmount; // TODO: Switch?
+    Point3D p = p1 + upAmount + rightAmount; 
     Point3D vector = p - p0;
     return Ray3D( p0, vector.unit() ); 
 }
@@ -69,7 +72,7 @@ Point3D RayScene::GetColor(Ray3D ray,int rDepth,Point3D cLimit){
         }
 
 
-        // TODO: Color of square looks slightly off
+        // TODO: Color of square looks a little off
         Point3D color = i_emissive + i_ambient + (i_diffuse_specular);
         color.p[0] = fmax(0.0f, fmin(1.0f, color.p[0]));
         color.p[1] = fmax(0.0f, fmin(1.0f, color.p[1]));

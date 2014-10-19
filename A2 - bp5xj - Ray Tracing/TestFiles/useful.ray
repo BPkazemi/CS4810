@@ -17,8 +17,10 @@
 // #camera 0.0 0.0 0.0   1.0 0.0 0.0   0.0 0.0 1.0   .523  
 // #camera 0.0 5.0 0.0   0.0 -1.0 0.0   0.0 0.0 1.0   .523  
 
+Broken .ray camera:
+// #camera 0.0 0.0 10.0   0.0 0.0 -1.0   0.0 0.0 1.0   .523  
+
 Ideas for art submission:
 
-Smiley face, with two glass-like eyes floating in the air, and a rectangle as the mouth
-
-Highly reflective titanium spheres, ordered from largest to smallest
+1. Smiley face, with two glass-like eyes floating in the air, and a rectangle as the mouth
+2. Highly reflective titanium spheres, ordered from largest to smallest
