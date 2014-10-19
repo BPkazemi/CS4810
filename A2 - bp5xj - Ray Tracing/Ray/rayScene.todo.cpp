@@ -3,13 +3,14 @@
 #include <math.h>
 #include <float.h>
 
-
+extern const double EPSILON;
 ///////////////////////
 // Ray-tracing stuff //
 ///////////////////////
 
 Point3D RayScene::Reflect(Point3D v,Point3D n){
-	return Point3D();
+    Point3D r = v - n * 2.0 * ( n.dot(v) );
+	return r;
 }
 
 int RayScene::Refract(Point3D v,Point3D n,double ir,Point3D& refract){
@@ -31,7 +32,6 @@ Ray3D RayScene::GetRay(RayCamera* camera,int i,int j,int width,int height){
 
     Point3D verticalDir = up*tan(theta);
     Point3D horizontalDir = right*(tan(alpha));
-    // Point3D horizontalDir = (right*(tan(theta)*aspectRatio));
     Point3D p1 = p0 + direction - verticalDir - horizontalDir;
     Point3D p2 = p0 + direction + verticalDir - horizontalDir;
     Point3D p3 = p0 + direction - verticalDir + horizontalDir;
@@ -46,6 +46,7 @@ Ray3D RayScene::GetRay(RayCamera* camera,int i,int j,int width,int height){
 
 Point3D RayScene::GetColor(Ray3D ray,int rDepth,Point3D cLimit){
     RayIntersectionInfo iInfo;
+    Ray3D reflect, refract;
     double t = group->intersect( ray, iInfo, 0.0 );
     if ( t != -1 ) {
         /* ~~~~~~ Emissive & Ambient ~~~~~ */
@@ -53,7 +54,6 @@ Point3D RayScene::GetColor(Ray3D ray,int rDepth,Point3D cLimit){
         Point3D i_ambient = ambient * iInfo.material->ambient;
 
         /* ~~~~~~ Diffuse & Specular ~~~~~ */
-        // TODO: Remove redundant calculations
         Point3D i_diffuse_specular = *(new Point3D(0.0, 0.0, 0.0));
         int shadow = 1;
         int isectCount = 0;
@@ -71,9 +71,23 @@ Point3D RayScene::GetColor(Ray3D ray,int rDepth,Point3D cLimit){
             i_diffuse_specular += (curDiffuse + curSpecular) * (double) shadow;
         }
 
+        /* ~~ Reflection ~~  */
+        // TODO: Reflection is too bright
+        Point3D i_reflection = *(new Point3D(0.0, 0.0, 0.0));
+        Point3D k_spec = iInfo.material->specular;
+        reflect.direction = Reflect( ray.direction, iInfo.normal );
+        reflect.position = iInfo.iCoordinate + reflect.direction * EPSILON;
+
+        if ( rDepth > 0 && 
+                ( k_spec[0] > cLimit[0] && 
+                  k_spec[1] > cLimit[1] && 
+                  k_spec[2] > cLimit[2]) ) {
+            int rDepthNew = rDepth - 1;
+            i_reflection += this->GetColor( reflect, rDepthNew, cLimit/k_spec) * k_spec;
+        }
 
         // TODO: Color of square looks a little off
-        Point3D color = i_emissive + i_ambient + (i_diffuse_specular);
+        Point3D color = i_emissive + i_ambient + i_diffuse_specular + i_reflection;
         color.p[0] = fmax(0.0f, fmin(1.0f, color.p[0]));
         color.p[1] = fmax(0.0f, fmin(1.0f, color.p[1]));
         color.p[2] = fmax(0.0f, fmin(1.0f, color.p[2]));
