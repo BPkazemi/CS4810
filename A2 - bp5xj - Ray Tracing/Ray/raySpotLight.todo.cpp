@@ -60,7 +60,24 @@ int RaySpotLight::isInShadow(RayIntersectionInfo& iInfo,RayShape* shape,int& ise
     return (t == -1) ? 1 : 0;
 }
 Point3D RaySpotLight::transparency(RayIntersectionInfo& iInfo,RayShape* shape,Point3D cLimit){
-	return Point3D(1,1,1);
+    Point3D transAccum = *(new Point3D(1.0, 1.0, 1.0));
+    RayIntersectionInfo iShadowInfo;
+
+    Point3D L = ( location - iInfo.iCoordinate ).unit();
+    double length = ( location - iInfo.iCoordinate ).length();
+    Ray3D iRay = *( new Ray3D( iInfo.iCoordinate + L*EPSILON, L ));
+
+    double t = shape->intersect( iRay, iShadowInfo, length );  
+    if( t != -1 ) {
+        Point3D kTrans = iShadowInfo.material->transparent;
+
+        if ( kTrans[0] > cLimit[0] &&
+                kTrans[1] > cLimit[1] &&
+                kTrans[2] > cLimit[2] ) {
+            transAccum *= kTrans * transparency( iShadowInfo, shape, cLimit/kTrans );
+        }
+    }
+    return transAccum;
 }
 
 //////////////////

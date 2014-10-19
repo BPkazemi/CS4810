@@ -14,7 +14,18 @@ Point3D RayScene::Reflect(Point3D v,Point3D n){
 }
 
 int RayScene::Refract(Point3D v,Point3D n,double ir,Point3D& refract){
-	return 0;
+    // TODO: Calculate theta_i, theta_r, and T correctly
+    /*
+    double theta_i, theta_r;
+    double dotProduct = n.unit().dot( -v.unit() );
+    theta_i = acos( dotProduct / ( v.unit().length() * n.unit().length() ) );
+    theta_r = asin( ir * sin(theta_i) );
+
+    refract = n*( ir*cos(theta_i) - cos(theta_r) ) - v*ir;
+    */ 
+    refract = v;
+
+	return 1;
 }
 
 Ray3D RayScene::GetRay(RayCamera* camera,int i,int j,int width,int height){
@@ -55,7 +66,7 @@ Point3D RayScene::GetColor(Ray3D ray,int rDepth,Point3D cLimit){
 
         /* ~~~~~~ Diffuse & Specular ~~~~~ */
         Point3D i_diffuse_specular = *(new Point3D(0.0, 0.0, 0.0));
-        int shadow = 1;
+        Point3D shadow = *(new Point3D(1.0, 1.0, 1.0));
         int isectCount = 0;
         for ( int i = 0; i < lightNum; i++ ) {
             RayLight* curLight = lights[ i ];
@@ -65,14 +76,13 @@ Point3D RayScene::GetColor(Ray3D ray,int rDepth,Point3D cLimit){
             /* ~~ Shadow Term ~~ */
             for ( int k = 0; k < group->sNum; k++ ) {
                 RayShape* curShape = group->shapes[k];
-                double curShadow = curLight->isInShadow( iInfo, curShape, isectCount );
-                if ( curShadow == 0 ) {  shadow = 0; }
+                shadow *= curLight->transparency( iInfo, curShape, cLimit );
             }
-            i_diffuse_specular += (curDiffuse + curSpecular) * (double) shadow;
+            i_diffuse_specular += (curDiffuse + curSpecular) * shadow;
         }
 
-        /* ~~ Reflection ~~  */
-        // TODO: Reflection is too bright
+        /* ~~ Reflection & Refraction ~~  */
+        // TODO: Reflection is too bright. Seems to be because of the background color or kspec?
         Point3D i_reflection = *(new Point3D(0.0, 0.0, 0.0));
         Point3D k_spec = iInfo.material->specular;
         reflect.direction = Reflect( ray.direction, iInfo.normal );
@@ -82,12 +92,23 @@ Point3D RayScene::GetColor(Ray3D ray,int rDepth,Point3D cLimit){
                 ( k_spec[0] > cLimit[0] && 
                   k_spec[1] > cLimit[1] && 
                   k_spec[2] > cLimit[2]) ) {
-            int rDepthNew = rDepth - 1;
-            i_reflection += this->GetColor( reflect, rDepthNew, cLimit/k_spec) * k_spec;
+            i_reflection += this->GetColor( reflect, (rDepth-1), cLimit/k_spec) * k_spec;
+        }
+
+        Point3D i_refraction = *(new Point3D(0.0, 0.0, 0.0));
+        Point3D k_tran = iInfo.material->transparent;
+        Refract( ray.direction, iInfo.normal, iInfo.material->refind, refract.direction );
+        refract.position = iInfo.iCoordinate + refract.direction * EPSILON;
+        if ( rDepth > 0 && 
+                ( k_tran[0] > cLimit[0] && 
+                  k_tran[1] > cLimit[1] && 
+                  k_tran[2] > cLimit[2]) ) {
+            i_refraction += this->GetColor( refract, (rDepth-1), cLimit/k_tran) * k_tran;
         }
 
         // TODO: Color of square looks a little off
-        Point3D color = i_emissive + i_ambient + i_diffuse_specular + i_reflection;
+        Point3D color = i_emissive + i_ambient + i_diffuse_specular + 
+            i_reflection + i_refraction;
         color.p[0] = fmax(0.0f, fmin(1.0f, color.p[0]));
         color.p[1] = fmax(0.0f, fmin(1.0f, color.p[1]));
         color.p[2] = fmax(0.0f, fmin(1.0f, color.p[2]));
