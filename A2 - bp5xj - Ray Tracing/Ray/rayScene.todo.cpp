@@ -14,18 +14,16 @@ Point3D RayScene::Reflect(Point3D v,Point3D n){
 }
 
 int RayScene::Refract(Point3D v,Point3D n,double ir,Point3D& refract){
-    // TODO: Calculate theta_i, theta_r, and T correctly
-    /*
     double theta_i, theta_r;
-    double dotProduct = n.unit().dot( -v.unit() );
-    theta_i = acos( dotProduct / ( v.unit().length() * n.unit().length() ) );
+    double dotProduct = n.dot( -v );
+    theta_i = acos( dotProduct );
     theta_r = asin( ir * sin(theta_i) );
 
-    refract = n*( ir*cos(theta_i) - cos(theta_r) ) - v*ir;
-    */ 
-    refract = v;
-
-	return 1;
+    if ( sin(theta_i) <= ir ) {
+        refract = n*( ir*cos(theta_i) - cos(theta_r) ) + v*ir;
+        return 1;
+    }
+    return 0;
 }
 
 Ray3D RayScene::GetRay(RayCamera* camera,int i,int j,int width,int height){
@@ -56,6 +54,7 @@ Ray3D RayScene::GetRay(RayCamera* camera,int i,int j,int width,int height){
 }
 
 Point3D RayScene::GetColor(Ray3D ray,int rDepth,Point3D cLimit){
+    // TODO: In general, things look *slightly* off
     RayIntersectionInfo iInfo;
     Ray3D reflect, refract;
     double t = group->intersect( ray, iInfo, 0.0 );
@@ -81,13 +80,11 @@ Point3D RayScene::GetColor(Ray3D ray,int rDepth,Point3D cLimit){
             i_diffuse_specular += (curDiffuse + curSpecular) * shadow;
         }
 
-        /* ~~ Reflection & Refraction ~~  */
-        // TODO: Reflection looks a *tad* off
+        /* ~~ Reflection ~~  */
         Point3D i_reflection = *(new Point3D(0.0, 0.0, 0.0));
         Point3D k_spec = iInfo.material->specular;
-
-            reflect.direction = Reflect( ray.direction, iInfo.normal ).unit();
-            reflect.position = iInfo.iCoordinate + reflect.direction * EPSILON;
+        reflect.direction = Reflect( ray.direction, iInfo.normal ).unit();
+        reflect.position = iInfo.iCoordinate + reflect.direction * EPSILON;
 
         if ( rDepth > 0 && 
                 ( k_spec[0] > cLimit.p[0] || 
@@ -96,6 +93,7 @@ Point3D RayScene::GetColor(Ray3D ray,int rDepth,Point3D cLimit){
             i_reflection += k_spec * this->GetColor( reflect, (rDepth-1), cLimit/k_spec);
         }
 
+        /* ~~ Refraction ~~ */
         Point3D i_refraction = *(new Point3D(0.0, 0.0, 0.0));
         Point3D k_tran = iInfo.material->transparent;
         Refract( ray.direction, iInfo.normal, iInfo.material->refind, refract.direction );
@@ -108,6 +106,7 @@ Point3D RayScene::GetColor(Ray3D ray,int rDepth,Point3D cLimit){
         }
 
         // TODO: Color of square looks a little off
+        /* ~~ Total Color ~~ */
         Point3D color = i_emissive + i_ambient + i_diffuse_specular + 
             i_reflection + i_refraction;
         color.p[0] = fmax(0.0f, fmin(1.0f, color.p[0]));
@@ -116,8 +115,7 @@ Point3D RayScene::GetColor(Ray3D ray,int rDepth,Point3D cLimit){
         return color;
     }
 
-    // Non-intersecting rays cast from the camera are supposed to return the background
-    // Otherwise they return black for correct color balance
+    // "Missed" rays cast from the camera should return the background
     if (camera->position[0] == ray.position[0]
             && camera->position[1] == ray.position[1]
             && camera->position[2] == ray.position[2])
