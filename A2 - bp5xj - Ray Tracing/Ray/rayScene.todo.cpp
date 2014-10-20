@@ -82,17 +82,18 @@ Point3D RayScene::GetColor(Ray3D ray,int rDepth,Point3D cLimit){
         }
 
         /* ~~ Reflection & Refraction ~~  */
-        // TODO: Reflection is too bright. Seems to be because of the background color or kspec?
+        // TODO: Reflection looks a *tad* off
         Point3D i_reflection = *(new Point3D(0.0, 0.0, 0.0));
         Point3D k_spec = iInfo.material->specular;
-        reflect.direction = Reflect( ray.direction, iInfo.normal );
-        reflect.position = iInfo.iCoordinate + reflect.direction * EPSILON;
+
+            reflect.direction = Reflect( ray.direction, iInfo.normal ).unit();
+            reflect.position = iInfo.iCoordinate + reflect.direction * EPSILON;
 
         if ( rDepth > 0 && 
-                ( k_spec[0] > cLimit[0] && 
-                  k_spec[1] > cLimit[1] && 
-                  k_spec[2] > cLimit[2]) ) {
-            i_reflection += this->GetColor( reflect, (rDepth-1), cLimit/k_spec) * k_spec;
+                ( k_spec[0] > cLimit.p[0] || 
+                  k_spec[1] > cLimit.p[1] || 
+                  k_spec[2] > cLimit.p[2]) ) {
+            i_reflection += k_spec * this->GetColor( reflect, (rDepth-1), cLimit/k_spec);
         }
 
         Point3D i_refraction = *(new Point3D(0.0, 0.0, 0.0));
@@ -100,9 +101,9 @@ Point3D RayScene::GetColor(Ray3D ray,int rDepth,Point3D cLimit){
         Refract( ray.direction, iInfo.normal, iInfo.material->refind, refract.direction );
         refract.position = iInfo.iCoordinate + refract.direction * EPSILON;
         if ( rDepth > 0 && 
-                ( k_tran[0] > cLimit[0] && 
-                  k_tran[1] > cLimit[1] && 
-                  k_tran[2] > cLimit[2]) ) {
+                ( k_tran[0] > cLimit.p[0] || 
+                  k_tran[1] > cLimit.p[1] || 
+                  k_tran[2] > cLimit.p[2]) ) {
             i_refraction += this->GetColor( refract, (rDepth-1), cLimit/k_tran) * k_tran;
         }
 
@@ -115,7 +116,14 @@ Point3D RayScene::GetColor(Ray3D ray,int rDepth,Point3D cLimit){
         return color;
     }
 
-    return background;
+    // Non-intersecting rays cast from the camera are supposed to return the background
+    // Otherwise they return black for correct color balance
+    if (camera->position[0] == ray.position[0]
+            && camera->position[1] == ray.position[1]
+            && camera->position[2] == ray.position[2])
+        return background;
+
+    return Point3D(0, 0, 0);
 }
 
 //////////////////

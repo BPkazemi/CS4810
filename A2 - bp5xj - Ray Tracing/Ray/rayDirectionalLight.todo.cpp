@@ -49,9 +49,9 @@ Point3D RayDirectionalLight::transparency(RayIntersectionInfo& iInfo,RayShape* s
     if( t != -1 ) {
         Point3D kTrans = iShadowInfo.material->transparent;
 
-        if ( kTrans[0] > cLimit[0] &&
-                kTrans[1] > cLimit[1] &&
-                kTrans[2] > cLimit[2] ) {
+        if ( kTrans[0] > cLimit.p[0] &&
+                kTrans[1] > cLimit.p[1] &&
+                kTrans[2] > cLimit.p[2] ) {
             transAccum *= kTrans * transparency( iShadowInfo, shape, cLimit/kTrans );
         }
     }
