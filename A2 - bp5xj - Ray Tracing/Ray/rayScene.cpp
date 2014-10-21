@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <time.h>
 #include <string.h>
 #include <math.h>
 #include <Image/bmp.h>
@@ -828,11 +829,16 @@ void RayScene::setCurrentTime(double t,int curveFit){
 }
 
 int RayScene::RayTrace(const int& width,const int& height,const int& rLimit,const double& cLimit,Image32& img){
-	int i,j;
+	int i,j,s;
 	Ray3D ray;
 	Point3D c;
 	Pixel32 p;
 	int rayCount=0;
+
+    int seed = time(NULL);
+    srand(seed);
+    int n = 5;
+    float i_s, j_s;
 
 	if(!img.setSize(width,height)){return 0;}
 	ray.position=camera->position;
@@ -840,8 +846,22 @@ int RayScene::RayTrace(const int& width,const int& height,const int& rLimit,cons
 		printf("           \r");
 		printf("%3.1f\r",(float)i/width*100);
 		for(j=0;j<height;j++){
-			ray=GetRay(camera,i,height-j-1,width,height);
-			c=GetColor(ray,rLimit,Point3D(cLimit,cLimit,cLimit));
+            c = Point3D(0.0, 0.0, 0.0);
+
+            // Jittered supersampling
+            for ( s = 0; s < pow(n, 2); s++ ) {
+                i_s = (((float) i + ((float) rand() / RAND_MAX)) / (float) height);
+                j_s = ((float) (height-j-1 + ((float) rand()/RAND_MAX)) / (float) width);
+
+                ray=GetRay(camera, 
+                        i_s, 
+                        j_s,
+                        width,
+                        height);
+                c+=GetColor(ray,rLimit,Point3D(cLimit,cLimit,cLimit));
+            }
+            c /= pow(n, 2);
+
 			p.r=(int)(c[0]*255);
 			p.g=(int)(c[1]*255);
 			p.b=(int)(c[2]*255);

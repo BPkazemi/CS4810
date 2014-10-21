@@ -188,7 +188,7 @@ public:
 	static int Refract(Point3D v,Point3D n,double ir,Point3D& refract);
 
 	/** This function returns that leaves the camera and goes through pixel (i,j) of the view plane */
-	static Ray3D GetRay(RayCamera* camera,int i,int j,int width,int height);
+	static Ray3D GetRay(RayCamera* camera,float i,float j,int width,int height);
 
 	/** This is the function responsible for the recursive ray-tracing returning the color obtained
 	  * by shooting a ray into the scene and recursing until either the recursion depth has been reached

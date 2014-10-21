@@ -17,6 +17,7 @@ void RayTriangle::initialize(void){
     plane.normal = line1.crossProduct(line2).unit();
 }
 double RayTriangle::intersect(Ray3D ray,RayIntersectionInfo& iInfo,double mx){
+    // TODO: Utilize mx param
     // TODO: Modifying z-axis doesn't seem to change anything
     initialize();
 
@@ -56,6 +57,12 @@ double RayTriangle::intersect(Ray3D ray,RayIntersectionInfo& iInfo,double mx){
 	return t;
 }
 BoundingBox3D RayTriangle::setBoundingBox(void){
+    Point3D pList[3];
+    pList[0] = v[0]->position;
+    pList[1] = v[1]->position;
+    pList[2] = v[2]->position;
+
+    BoundingBox3D bBox = *(new BoundingBox3D( pList, 3 ));
 	return bBox;
 }
 

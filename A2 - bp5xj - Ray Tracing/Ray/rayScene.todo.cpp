@@ -26,7 +26,7 @@ int RayScene::Refract(Point3D v,Point3D n,double ir,Point3D& refract){
     return 0;
 }
 
-Ray3D RayScene::GetRay(RayCamera* camera,int i,int j,int width,int height){
+Ray3D RayScene::GetRay(RayCamera* camera,float i,float j,int width,int height){
     // TODO: Negative camera positions break the ray tracer...
     // TODO: Changing the camera's z-position breaks the ray tracer
     Point3D p0 = camera->position;
@@ -45,8 +45,8 @@ Ray3D RayScene::GetRay(RayCamera* camera,int i,int j,int width,int height){
     Point3D p2 = p0 + direction + verticalDir - horizontalDir;
     Point3D p3 = p0 + direction - verticalDir + horizontalDir;
 
-    Point3D upAmount = (p3-p1) * (((float) i + 0.5)/(float) height);
-    Point3D rightAmount = (p2-p1) * (((float) j + 0.5)/(float) width); 
+    Point3D upAmount = (p3-p1) * ((float) i);
+    Point3D rightAmount = (p2-p1) * ((float) j); 
 
     Point3D p = p1 + upAmount + rightAmount; 
     Point3D vector = p - p0;
