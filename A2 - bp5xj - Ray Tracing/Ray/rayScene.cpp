@@ -829,7 +829,7 @@ void RayScene::setCurrentTime(double t,int curveFit){
 }
 
 int RayScene::RayTrace(const int& width,const int& height,const int& rLimit,const double& cLimit,Image32& img){
-	int i,j,s;
+	int i,j,si,sj;
 	Ray3D ray;
 	Point3D c;
 	Pixel32 p;
@@ -849,16 +849,20 @@ int RayScene::RayTrace(const int& width,const int& height,const int& rLimit,cons
             c = Point3D(0.0, 0.0, 0.0);
 
             // Jittered supersampling
-            for ( s = 0; s < pow(n, 2); s++ ) {
-                i_s = (((float) i + ((float) rand() / RAND_MAX)) / (float) height);
-                j_s = ((float) (height-j-1 + ((float) rand()/RAND_MAX)) / (float) width);
+            for ( si = 0; si < n; si++ ) {
+                for( sj = 0; sj < n; sj++ ) {
+                    float i_rand = (float) rand() / RAND_MAX;
+                    float j_rand = (float) rand() / RAND_MAX;
+                    i_s = (((float) i + (i_rand + si) / ((float) n) ) / (float) height);
+                    j_s = ((float) (height-j-1 + ((j_rand + sj ) / (float) n)) / (float) width);
 
-                ray=GetRay(camera, 
-                        i_s, 
-                        j_s,
-                        width,
-                        height);
-                c+=GetColor(ray,rLimit,Point3D(cLimit,cLimit,cLimit));
+                    ray=GetRay(camera, 
+                            i_s, 
+                            j_s,
+                            width,
+                            height);
+                    c+=GetColor(ray,rLimit,Point3D(cLimit,cLimit,cLimit));
+                }
             }
             c /= pow(n, 2);
 
