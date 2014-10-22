@@ -19,7 +19,7 @@ double RayGroup::intersect(Ray3D ray,RayIntersectionInfo& iInfo,double mx){
     Ray3D rayTransform = transform_inv.mult( ray );
     rayTransform.direction = rayTransform.direction.unit();
 
-    /** ~~ BVH Test ~~ **
+    /** ~~ BVH Test ~~ 
     BoundingBox3D bBox = setBoundingBox();
     if( bBox.intersect( rayTransform ) <= 0.0 ) {  // How do we handle the 0 case?
         return -1.0;
@@ -28,16 +28,16 @@ double RayGroup::intersect(Ray3D ray,RayIntersectionInfo& iInfo,double mx){
 
     /*
     // ~~ Find intersections with child bounding volumes ~~ //
-    BoundingBox3D shapeBox;
+    BoundingBox3D sBox;
     RayShape *curChild;
     map<double, RayShape*> bv_t;
     double curT;
 
     for ( int i = 0; i < sNum; i++ ) {
         curChild = shapes[i];
-        shapeBox = curChild->setBoundingBox();
+        sBox = curChild->setBoundingBox();
 
-        curT = shapeBox.intersect( rayTransform );
+        curT = sBox.intersect( rayTransform );
         if ( curT > 0.0 ) {
             bv_t[ curT ] = curChild;
         }
@@ -96,38 +96,17 @@ double RayGroup::intersect(Ray3D ray,RayIntersectionInfo& iInfo,double mx){
 }
 
 BoundingBox3D RayGroup::setBoundingBox(void){
-    BoundingBox3D shapeBox, bBox = BoundingBox3D();
+    BoundingBox3D bBox = BoundingBox3D( Point3D(0, 0, 0), Point3D(0, 0, 0) );
     RayShape *curShape;
-
-    double minX = FLT_MAX, maxX = FLT_MIN, minY = FLT_MAX, maxY = FLT_MIN, minZ = FLT_MAX, maxZ = FLT_MIN;
 
     /* ~~ Accumulate child bounding boxes ~~ */
     for ( int i = 0; i < sNum; i++ ) {
-        curShape = shapes[i];
-        shapeBox = curShape->setBoundingBox();
-
-        /*
-        minX = min( minX, min( shapeBox.p[0].p[0], shapeBox.p[1].p[0] ));
-        maxX = max( maxX, max( shapeBox.p[0].p[0], shapeBox.p[1].p[0] ));
-        minY = min( minY, min( shapeBox.p[0].p[1], shapeBox.p[1].p[1] ));
-        maxY = max( maxY, max( shapeBox.p[0].p[1], shapeBox.p[1].p[1] ));
-        minZ = min( minZ, min( shapeBox.p[0].p[2], shapeBox.p[1].p[2] ));
-        maxZ = max( maxZ, max( shapeBox.p[0].p[2], shapeBox.p[1].p[2] ));
-        */
-
-        bBox = bBox + shapeBox;
+        bBox += shapes[i]->setBoundingBox();
     }
-    /*
-    Point3D minPoint = Point3D( minX, minY, minZ );
-    Point3D maxPoint = Point3D( maxX, maxY, maxZ );
-    bBox = BoundingBox3D( minPoint, maxPoint );
-    */
 
     /* ~~ Transform accumulated box ~~ */
     Matrix4D transformation = this->getMatrix();
-    bBox = bBox.transform( transformation );
-
-	return bBox;
+    return bBox.transform( transformation );
 }
 
 int StaticRayGroup::set(void){

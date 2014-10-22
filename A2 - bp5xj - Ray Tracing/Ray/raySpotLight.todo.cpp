@@ -68,13 +68,15 @@ Point3D RaySpotLight::transparency(RayIntersectionInfo& iInfo,RayShape* shape,Po
     Ray3D iRay = Ray3D( iInfo.iCoordinate + L*EPSILON, L );
 
     double t = shape->intersect( iRay, iShadowInfo, length );  
-    if( t != -1 ) {
+    if( t != -1.0 ) {
         Point3D kTrans = iShadowInfo.material->transparent;
 
         if ( kTrans[0] > cLimit.p[0] &&
                 kTrans[1] > cLimit.p[1] &&
                 kTrans[2] > cLimit.p[2] ) {
             transAccum *= kTrans * transparency( iShadowInfo, shape, cLimit/kTrans );
+        } else {
+            transAccum = Point3D(0.0, 0.0, 0.0);
         }
     }
     return transAccum;

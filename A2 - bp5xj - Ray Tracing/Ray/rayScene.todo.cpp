@@ -77,7 +77,7 @@ Point3D RayScene::GetColor(Ray3D ray,int rDepth,Point3D cLimit){
                 RayShape* curShape = group->shapes[k];
                 shadow *= curLight->transparency( iInfo, curShape, cLimit );
             }
-            i_diffuse_specular += (curDiffuse + curSpecular) * shadow;
+            i_diffuse_specular += (curDiffuse + curSpecular) * (shadow);
         }
 
         /* ~~ Reflection ~~  */

@@ -3,6 +3,7 @@
 #include "rayPointLight.h"
 #include "rayScene.h"
 
+extern const double EPSILON;
 ////////////////////////
 //  Ray-tracing stuff //
 ////////////////////////
@@ -59,6 +60,8 @@ Point3D RayPointLight::transparency(RayIntersectionInfo& iInfo,RayShape* shape,P
                 kTrans[1] > cLimit.p[1] &&
                 kTrans[2] > cLimit.p[2] ) {
             transAccum *= kTrans * transparency( iShadowInfo, shape, cLimit/kTrans );
+        } else {
+            transAccum = Point3D(0.0, 0.0, 0.0);
         }
     }
     return transAccum;

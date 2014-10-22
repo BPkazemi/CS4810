@@ -53,6 +53,8 @@ Point3D RayDirectionalLight::transparency(RayIntersectionInfo& iInfo,RayShape* s
                 kTrans[1] > cLimit.p[1] &&
                 kTrans[2] > cLimit.p[2] ) {
             transAccum *= kTrans * transparency( iShadowInfo, shape, cLimit/kTrans );
+        } else {
+            transAccum = Point3D(0.0, 0.0, 0.0);
         }
     }
     return transAccum;

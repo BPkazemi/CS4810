@@ -29,7 +29,7 @@ double RayTriangle::intersect(Ray3D ray,RayIntersectionInfo& iInfo,double mx){
 
     double t = -(plane.evaluate( p0 )) / ( V.dot( plane.normal ) );
 
-    if ( t < 0.0 )  return -1.0; 
+    if ( t < 0.0 )  return -1.0;  // Triangle behind ray
     Point3D p = p0 + V*t;
 
     RayVertex t1, t2;
@@ -68,8 +68,7 @@ BoundingBox3D RayTriangle::setBoundingBox(void){
     pList[1] = v[1]->position;
     pList[2] = v[2]->position;
 
-    BoundingBox3D bBox = BoundingBox3D( pList, 3 );
-	return bBox;
+    return BoundingBox3D( pList, 3 );
 }
 
 //////////////////

@@ -6,49 +6,39 @@
 #include <float.h>
 
 #include "geometry.h"
+#include "../Ray/rayBox.h"
+#include "../Ray/rayScene.h"
 
 
 ///////////////////////
 // Ray-tracing stuff //
 ///////////////////////
 double BoundingBox3D::intersect(const Ray3D& ray) const {
+    Point3D p0 = p[0], p1 = p[1];
+
     // Ray inside box test
-    Point3D p1 = p[0], p2 = p[1], p0 = ray.position;
-    bool xTest = ( p0.p[0] <= fmax( p1.p[0], p2.p[0] ) ) &&
-        ( p0.p[0] >= fmin( p1.p[0], p2.p[0] ));
-    bool yTest = ( p0.p[1] <= fmax( p1.p[1], p2.p[1] ) ) && 
-        ( p0.p[1] >= fmin( p1.p[1], p2.p[1] ) );
-    bool zTest = ( p0.p[2] <= fmax( p1.p[2], p2.p[2] ) ) &&
-        ( p0.p[2] >= fmin( p1.p[2], p2.p[2] ) ); 
-    if ( xTest == true && yTest == true && zTest == true ) {
-        return 0.0; 
-    }
+    bool xTest = p0.p[0] <= ray.position.p[0] && ray.position.p[0] <= p1.p[0];
+    bool yTest = p0.p[1] <= ray.position.p[1] && ray.position.p[1] <= p1.p[1];
+    bool zTest = p0.p[2] <= ray.position.p[2] && ray.position.p[2] <= p1.p[2];
 
-    // Create 6 planes, intersect 3 
-    Point3D v1, v2, v3;
-    double xDel = p2.p[0] - p1.p[0], 
-           yDel = p2.p[1] - p1.p[1], 
-           zDel = p2.p[2] - p1.p[2];
+    if ( xTest == true && yTest == true && zTest == true ) { return 0.0; }
 
-    // "Slabs" have same normal orientation
-    /* ~~ Create Box shapes for each plane
-     * ~~ Then do ray-box intersection
-    */
+    // Create RayBox of BoundingVolume
+    Point3D center = Point3D( 
+            ( p0.p[0] + p1.p[0] ) / 2.0, 
+            ( p0.p[1] + p1.p[1] ) / 2.0, 
+            ( p0.p[2] + p1.p[2] ) / 2.0
+    );
+    double xLen = p1.p[0] - p0.p[0];
+    double yLen = p1.p[1] - p0.p[1];
+    double zLen = p1.p[2] - p0.p[2];
 
-        bool xTest = ( pHit.p[0] <= fmax( p1.p[0], p2.p[0] ) ) &&
-            ( pHit.p[0] >= fmin( p1.p[0], p2.p[0] ));
-        bool yTest = ( pHit.p[1] <= fmax( p1.p[1], p2.p[1] ) ) && 
-            ( pHit.p[1] >= fmin( p1.p[1], p2.p[1] ) );
-        bool zTest = ( pHit.p[2] <= fmax( p1.p[2], p2.p[2] ) ) &&
-            ( pHit.p[2] >= fmin( p1.p[2], p2.p[2] ) ); 
-        bool inBounds = xTest && yTest && zTest;
-        if( curT < minT && inBounds == true ) {
-            doesIntersect = true;
-            minT = curT;
-        }
-    }
+    RayBox rBox = RayBox();
+    rBox.center = center;
+    rBox.length = Point3D(xLen, yLen, zLen);
 
-    return (doesIntersect) ? minT : -1.0;
+    RayIntersectionInfo iInfo;
+    return rBox.intersect( ray, iInfo, 0.0 );
 }
 
 /////////////////////

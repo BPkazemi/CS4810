@@ -107,7 +107,9 @@ double RayBox::intersect(Ray3D ray,RayIntersectionInfo& iInfo,double mx){
 }
 
 BoundingBox3D RayBox::setBoundingBox(void){
-	return bBox;
+    Point3D antiPodal1 = center - length;
+    Point3D antiPodal2 = center + length;
+	return BoundingBox3D( antiPodal1, antiPodal2 );
 }
 
 //////////////////
