@@ -45,12 +45,78 @@ int RayPointLight::isInShadow(RayIntersectionInfo& iInfo,RayShape* shape,int& is
     return (t == -1) ? 1 : 0;
 }
 Point3D RayPointLight::transparency(RayIntersectionInfo& iInfo,RayShape* shape,Point3D cLimit){ 
-    Point3D transAccum = Point3D(1.0, 1.0, 1.0);
-    RayIntersectionInfo iShadowInfo;
+    double gridLength = 2.0;
+    float range = 0.1;
+    float incr = range / gridLength;
+    double totalSamples = pow( gridLength, 2.0 );
+    int numSamples = 0;
 
+    Point3D transAccum = Point3D(0.0, 0.0, 0.0);
+
+    // TODO: Monte-carlo generation
+    for ( float i = -(range/2.0); i <= (range/2.0); i += incr ) {
+        for ( float j = -(range/2.0); j <= (range/2.0); j += incr ) {
+            numSamples += 1;
+            Point3D curLocation = location + Point3D(i, 0, j);
+
+            Point3D L = ( curLocation - iInfo.iCoordinate ).unit();
+            double length = ( curLocation - iInfo.iCoordinate ).length();
+            Ray3D iRay = Ray3D( iInfo.iCoordinate + L*EPSILON, L );
+
+            Point3D curTrans = Point3D(1.0, 1.0, 1.0);
+            RayIntersectionInfo iShadowInfo;
+            double t = shape->intersect( iRay, iShadowInfo, length );  
+            if( t != -1.0 ) {
+                Point3D kTrans = iShadowInfo.material->transparent;
+
+                if ( kTrans[0] > cLimit.p[0] &&
+                        kTrans[1] > cLimit.p[1] &&
+                        kTrans[2] > cLimit.p[2] ) {
+                    curTrans *= kTrans * transparency( iShadowInfo, shape, cLimit/kTrans );
+                } else {
+                    curTrans = Point3D(0.0, 0.0, 0.0);
+                }
+            }
+            transAccum += (curTrans);
+        }
+    }
+    return transAccum / numSamples;
+
+
+    /*
+    for ( int k = 0; k < 4; k++ ) {
+        RayVertex curVertex = aPoints[ k ];
+        Point3D curLocation = curVertex.position;
+
+        Point3D L = ( curLocation - iInfo.iCoordinate ).unit();
+        double length = ( curLocation - iInfo.iCoordinate ).length();
+        Ray3D iRay = Ray3D( iInfo.iCoordinate + L*EPSILON, L );
+
+        Point3D curTrans = Point3D(1.0, 1.0, 1.0);
+        RayIntersectionInfo iShadowInfo;
+        double t = shape->intersect( iRay, iShadowInfo, length );  
+        if( t != -1.0 ) {
+            Point3D kTrans = iShadowInfo.material->transparent;
+
+            if ( kTrans[0] > cLimit.p[0] &&
+                    kTrans[1] > cLimit.p[1] &&
+                    kTrans[2] > cLimit.p[2] ) {
+                curTrans *= kTrans * transparency( iShadowInfo, shape, cLimit/kTrans );
+            } else {
+                curTrans = Point3D(0.0, 0.0, 0.0);
+            }
+        }
+        transAccum += (curTrans/4.0);
+    }
+    */
+
+    /* Working transparency *
     Point3D L = ( location - iInfo.iCoordinate ).unit();
     double length = ( location - iInfo.iCoordinate ).length();
     Ray3D iRay = Ray3D( iInfo.iCoordinate + L*EPSILON, L );
+
+    Point3D transAccum = Point3D(1.0, 1.0, 1.0);
+    RayIntersectionInfo iShadowInfo;
 
     double t = shape->intersect( iRay, iShadowInfo, length );  
     if( t != -1.0 ) {
@@ -65,6 +131,7 @@ Point3D RayPointLight::transparency(RayIntersectionInfo& iInfo,RayShape* shape,P
         }
     }
     return transAccum;
+    */
     /*
     areaLight = new RaySphere();
     areaLight->center = location;

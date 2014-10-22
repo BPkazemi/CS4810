@@ -1,6 +1,7 @@
 #ifndef POINT_LIGHT_INCLUDED
 #define POINT_LIGHT_INCLUDED
 #include "rayLight.h"
+#include "rayTriangle.h"
 
 /** This class describes a point-light light-source. This light has a fixed 
   * position and the light attenuates as function of the distance from the light-source.
@@ -15,11 +16,6 @@ public:
 	double linearAtten;
 	/** The quadratic term of the attenuation equation */
 	double quadAtten;		
-	
-    /* The sphere light used for soft shadows 
-    double lightRadius;
-    RaySphere *areaLight;
-    */
 
 	/** This method reads in the point light from a .ray file. */
 	int read(FILE* fp);

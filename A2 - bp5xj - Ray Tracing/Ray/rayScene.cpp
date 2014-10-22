@@ -17,6 +17,7 @@
 #include "rayGroup.h"
 
 const static int BUF_SIZE=500;
+// TODO: Modify each light's .cpp to read in the group number
 
 int RayVertex::read(FILE* fp){
 	double size;
@@ -134,7 +135,7 @@ void RayFile::write(FILE* fp){
 RayScene::RayScene(void){
 	ambient=Point3D(0.0,0.0,0.0);
 	background=Point3D(1.0,1.0,1.0);
-	lights=NULL;
+	lights=NULL;  // TODO: lightsMap = null
 	lightNum=0;
 	materials=NULL;
 	materialNum=0;
@@ -156,6 +157,7 @@ RayMaterial* RayScene::getMaterial(int index){
 RayScene::~RayScene(void){
 	int i;
 	for(i=0;i<lightNum;i++){delete lights[i];}
+    // TODO: Iterate over lightsMap and delete it
 	if(lightNum>0){delete[] lights;}
 	if(materialNum>0){delete[] materials;}
 	if(textureNum>0){delete[] textures;}
@@ -249,6 +251,7 @@ int RayScene::read(FILE* fp,int transformType){
 	keyFiles=NULL;
 	keyData=NULL;
 	lights=NULL;
+    // TODO: lightsMap=NULL;
 	textures=NULL;
 	materials=NULL;
 	rayFiles=NULL;
@@ -359,6 +362,7 @@ int RayScene::read(FILE* fp,int transformType){
 						if(!lights){
 							ParseLineError(cmndCtr,"failed to allocate memory Lights\n");
 						}
+                        // TODO: Define map here.
 					}
 				}
 			}
@@ -609,6 +613,12 @@ int RayScene::read(FILE* fp,int transformType){
 				else if(!strcmp(keyword,"light_spot")){lights[indL]=new RaySpotLight;}
 				if(!lights[indL]){ParseLineError(cmndCtr,"failed to allocate memory for light\n");}
 				if(!lights[indL]->read(fp)){ParseLineError(cmndCtr,"failed to parse light\n");}
+                // TODO: for each case:
+                //          Get the group number. 
+                //          If the group is already in the map,
+                //              Create a new list of lights with room for new light
+                //              Copy old list over to new list. Add new light.
+                //              Delete old entry in map. Add new entry.
 			}
 		}
 
@@ -814,6 +824,7 @@ void RayScene::drawOpenGL(void){
 	camera->drawOpenGL();
 
 	glEnable(GL_LIGHTING);
+    // TODO: Modify to iterate map, call drawOpenGL on each list for every key
 	for(int i=0;i<lightNum;i++){lights[i]->drawOpenGL(i);}	
 	
 	group->drawOpenGL(-1);
