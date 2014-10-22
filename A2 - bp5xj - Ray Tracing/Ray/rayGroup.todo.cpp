@@ -96,7 +96,7 @@ double RayGroup::intersect(Ray3D ray,RayIntersectionInfo& iInfo,double mx){
 }
 
 BoundingBox3D RayGroup::setBoundingBox(void){
-    BoundingBox3D shapeBox, bBox = *(new BoundingBox3D);
+    BoundingBox3D shapeBox, bBox = BoundingBox3D();
     RayShape *curShape;
 
     double minX = FLT_MAX, maxX = FLT_MIN, minY = FLT_MAX, maxY = FLT_MIN, minZ = FLT_MAX, maxZ = FLT_MIN;

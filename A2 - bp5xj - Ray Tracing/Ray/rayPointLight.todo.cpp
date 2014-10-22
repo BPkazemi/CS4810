@@ -36,7 +36,7 @@ int RayPointLight::isInShadow(RayIntersectionInfo& iInfo,RayShape* shape,int& is
     // TODO: Make use of isectCount
     Point3D L = ( location - iInfo.iCoordinate ).unit();
     double length = ( location - iInfo.iCoordinate ).length();
-    Ray3D iRay = *(new Ray3D( iInfo.iCoordinate, L ));
+    Ray3D iRay = Ray3D( iInfo.iCoordinate, L );
 
     RayIntersectionInfo dummyInfo;
     double t = shape->intersect( iRay, dummyInfo, length );  
@@ -44,12 +44,12 @@ int RayPointLight::isInShadow(RayIntersectionInfo& iInfo,RayShape* shape,int& is
     return (t == -1) ? 1 : 0;
 }
 Point3D RayPointLight::transparency(RayIntersectionInfo& iInfo,RayShape* shape,Point3D cLimit){ 
-    Point3D transAccum = *(new Point3D(1.0, 1.0, 1.0));
+    Point3D transAccum = Point3D(1.0, 1.0, 1.0);
     RayIntersectionInfo iShadowInfo;
 
     Point3D L = ( location - iInfo.iCoordinate ).unit();
     double length = ( location - iInfo.iCoordinate ).length();
-    Ray3D iRay = *( new Ray3D( iInfo.iCoordinate + L*EPSILON, L ));
+    Ray3D iRay = Ray3D( iInfo.iCoordinate + L*EPSILON, L );
 
     double t = shape->intersect( iRay, iShadowInfo, length );  
     if( t != -1.0 ) {

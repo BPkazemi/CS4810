@@ -64,8 +64,8 @@ Point3D RayScene::GetColor(Ray3D ray,int rDepth,Point3D cLimit){
         Point3D i_ambient = ambient * iInfo.material->ambient;
 
         /* ~~~~~~ Diffuse & Specular ~~~~~ */
-        Point3D i_diffuse_specular = *(new Point3D(0.0, 0.0, 0.0));
-        Point3D shadow = *(new Point3D(1.0, 1.0, 1.0));
+        Point3D i_diffuse_specular = Point3D(0.0, 0.0, 0.0);
+        Point3D shadow = Point3D(1.0, 1.0, 1.0);
         int isectCount = 0;
         for ( int i = 0; i < lightNum; i++ ) {
             RayLight* curLight = lights[ i ];
@@ -81,7 +81,7 @@ Point3D RayScene::GetColor(Ray3D ray,int rDepth,Point3D cLimit){
         }
 
         /* ~~ Reflection ~~  */
-        Point3D i_reflection = *(new Point3D(0.0, 0.0, 0.0));
+        Point3D i_reflection = Point3D(0.0, 0.0, 0.0);
         Point3D k_spec = iInfo.material->specular;
         reflect.direction = Reflect( ray.direction, iInfo.normal ).unit();
         reflect.position = iInfo.iCoordinate + reflect.direction * EPSILON;
@@ -94,7 +94,7 @@ Point3D RayScene::GetColor(Ray3D ray,int rDepth,Point3D cLimit){
         }
 
         /* ~~ Refraction ~~ */
-        Point3D i_refraction = *(new Point3D(0.0, 0.0, 0.0));
+        Point3D i_refraction = Point3D(0.0, 0.0, 0.0);
         Point3D k_tran = iInfo.material->transparent;
         Refract( ray.direction, iInfo.normal, iInfo.material->refind, refract.direction );
         refract.position = iInfo.iCoordinate + refract.direction * EPSILON;

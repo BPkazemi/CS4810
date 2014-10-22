@@ -837,7 +837,7 @@ int RayScene::RayTrace(const int& width,const int& height,const int& rLimit,cons
 
     int seed = time(NULL);
     srand(seed);
-    int n = 2;
+    int n = 1;
     float i_s, j_s;
 
 	if(!img.setSize(width,height)){return 0;}

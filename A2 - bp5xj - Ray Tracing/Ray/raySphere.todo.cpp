@@ -57,7 +57,7 @@ BoundingBox3D RaySphere::setBoundingBox(void){
     double zMax = fmax( p5[2], p6[2] );
     Point3D antiPodal2 = Point3D( xMax, yMax, zMax );
 
-    BoundingBox3D bBox = *(new BoundingBox3D( antiPodal1, antiPodal2  ));
+    BoundingBox3D bBox = BoundingBox3D( antiPodal1, antiPodal2  );
 	return bBox;
 }
 

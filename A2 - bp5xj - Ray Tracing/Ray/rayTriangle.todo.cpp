@@ -68,7 +68,7 @@ BoundingBox3D RayTriangle::setBoundingBox(void){
     pList[1] = v[1]->position;
     pList[2] = v[2]->position;
 
-    BoundingBox3D bBox = *(new BoundingBox3D( pList, 3 ));
+    BoundingBox3D bBox = BoundingBox3D( pList, 3 );
 	return bBox;
 }
 
