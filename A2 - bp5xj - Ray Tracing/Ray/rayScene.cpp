@@ -837,7 +837,7 @@ int RayScene::RayTrace(const int& width,const int& height,const int& rLimit,cons
 
     int seed = time(NULL);
     srand(seed);
-    int n = 5;
+    int n = 2;
     float i_s, j_s;
 
 	if(!img.setSize(width,height)){return 0;}
@@ -848,6 +848,17 @@ int RayScene::RayTrace(const int& width,const int& height,const int& rLimit,cons
 		for(j=0;j<height;j++){
             c = Point3D(0.0, 0.0, 0.0);
 
+            /*
+             * Old School 
+            i_s = (((float) i + (0.5) ) / (float) height);
+            j_s = ((float) (height-j-1 + (0.5)) / (float) width);
+            ray=GetRay(camera, 
+                    i_s, 
+                    j_s,
+                    width,
+                    height);
+            c=GetColor(ray,rLimit,Point3D(cLimit,cLimit,cLimit));
+            */
             // Jittered supersampling
             for ( si = 0; si < n; si++ ) {
                 for( sj = 0; sj < n; sj++ ) {

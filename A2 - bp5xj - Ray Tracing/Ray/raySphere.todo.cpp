@@ -16,7 +16,7 @@ double RaySphere::intersect(Ray3D ray,RayIntersectionInfo& iInfo,double mx){
     double d_squared = L.dot( L ) - pow(t_center, 2.0);
 
     if ( d_squared > pow( radius, 2.0 ) ) {
-        return 0;
+        return -1.0;
     }
 
     double t_edge = sqrt( pow(radius, 2.0) - d_squared );
@@ -29,7 +29,7 @@ double RaySphere::intersect(Ray3D ray,RayIntersectionInfo& iInfo,double mx){
     double difference = pow( pRadius, 2.0 ) - pow( radius, 2.0 );
     bool doesIntersect = (pow( (p - center).length(), 2.0 ) - pow( radius, 2.0 )) < EPSILON; 
     if ( !doesIntersect ) {
-        return 0;
+        return -1.0;
     }
 
     iInfo.material = material;

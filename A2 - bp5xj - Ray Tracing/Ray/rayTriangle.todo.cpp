@@ -18,12 +18,18 @@ void RayTriangle::initialize(void){
 }
 double RayTriangle::intersect(Ray3D ray,RayIntersectionInfo& iInfo,double mx){
     // TODO: Utilize mx param
+    // TODO: parallel lines test
     // TODO: Modifying z-axis doesn't seem to change anything
     initialize();
 
     Point3D p0 = ray.position;
     Point3D V = ray.direction.unit();
+
+    if ( V.dot( plane.normal ) == 0 )  return -1.0;  // Ray parallel to triangle plane 
+
     double t = -(plane.evaluate( p0 )) / ( V.dot( plane.normal ) );
+
+    if ( t < 0.0 )  return -1.0; 
     Point3D p = p0 + V*t;
 
     RayVertex t1, t2;
@@ -37,7 +43,7 @@ double RayTriangle::intersect(Ray3D ray,RayIntersectionInfo& iInfo,double mx){
         Point3D n1 = v2.crossProduct( v1 ).unit();
 
         if ( ((p-p0).dot(n1)) < 0 ) {  // Check if p within lines
-            return 0;
+            return -1.0;
         }
     }
     t1 = *v[ 2 ];
@@ -46,7 +52,7 @@ double RayTriangle::intersect(Ray3D ray,RayIntersectionInfo& iInfo,double mx){
     v2 = t2.position - p0;
     Point3D n3 = v2.crossProduct( v1 ).unit();
     if ( ((p-p0).dot(n3)) < 0 ) {  // Check if p within lines
-        return 0;
+        return -1.0;
     }
 
     iInfo.material = material;

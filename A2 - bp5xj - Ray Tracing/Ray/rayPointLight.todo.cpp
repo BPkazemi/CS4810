@@ -52,7 +52,7 @@ Point3D RayPointLight::transparency(RayIntersectionInfo& iInfo,RayShape* shape,P
     Ray3D iRay = *( new Ray3D( iInfo.iCoordinate + L*EPSILON, L ));
 
     double t = shape->intersect( iRay, iShadowInfo, length );  
-    if( t != -1 ) {
+    if( t != -1.0 ) {
         Point3D kTrans = iShadowInfo.material->transparent;
 
         if ( kTrans[0] > cLimit.p[0] &&
@@ -62,6 +62,48 @@ Point3D RayPointLight::transparency(RayIntersectionInfo& iInfo,RayShape* shape,P
         }
     }
     return transAccum;
+    /*
+    areaLight = new RaySphere();
+    areaLight->center = location;
+    areaLight->radius = lightRadius;
+
+    int n = 5;
+    bool softShadows = false;
+
+    Point3D transAccum = *(new Point3D(1.0, 1.0, 1.0));
+    Point3D softShadow = *(new Point3D(0.0, 0.0, 0.0));
+    RayIntersectionInfo iShadowInfo;
+    Point3D L;
+    Point3D curLocation;
+
+    for ( int i = 0; i < n; i++) {
+        Point3D start = Point3D( areaLight->center.p[0] - lightRadius,
+                areaLight->center.p[1] - lightRadius,
+                areaLight->center.p[2] - lightRadius );
+        double incr = i * ((2.0 * lightRadius)/5.0);
+        Point3D amount = Point3D( incr, incr, incr );
+
+        curLocation = start + amount;
+        L = ( curLocation - iInfo.iCoordinate ).unit();
+        double length = ( curLocation - iInfo.iCoordinate ).length();
+        Ray3D iRay = *( new Ray3D( iInfo.iCoordinate + L*EPSILON, L ));
+
+        double t = shape->intersect( iRay, iShadowInfo, length );  
+        if( t != -1 ) {
+            Point3D kTrans = iShadowInfo.material->transparent;
+
+            if ( kTrans[0] > cLimit.p[0] &&
+                    kTrans[1] > cLimit.p[1] &&
+                    kTrans[2] > cLimit.p[2] ) {
+                transAccum *= kTrans * transparency( iShadowInfo, shape, cLimit/kTrans );
+                softShadow += transAccum;
+                softShadows = true;
+            }
+        }
+
+    }
+    return (softShadows) ? (softShadow / n) : Point3D(1.0, 1.0, 1.0);
+    */
 }
 
 

@@ -16,6 +16,11 @@ public:
 	/** The quadratic term of the attenuation equation */
 	double quadAtten;		
 	
+    /* The sphere light used for soft shadows 
+    double lightRadius;
+    RaySphere *areaLight;
+    */
+
 	/** This method reads in the point light from a .ray file. */
 	int read(FILE* fp);
 

@@ -12,6 +12,7 @@
 // Ray-tracing stuff //
 ///////////////////////
 double BoundingBox3D::intersect(const Ray3D& ray) const {
+    // TODO: RayBox intersection first
     // Ray inside box test
     Point3D p1 = p[0], p2 = p[1], p0 = ray.position;
     bool xTest = ( p0.p[0] <= fmax( p1.p[0], p2.p[0] ) ) &&
