@@ -5,10 +5,12 @@
 #ray_file ./TestFiles/sphere.ray
 #ray_file ./TestFiles/square.ray
 #light_num 1
-#light_point
+#light_spot
     1.0  1.0  1.0
-    0.0  7.0  0.0
+    0.0  10.0  0.0
+    0.0  -1.0 0.0
     1.0  0.0  0.0
+    0.2  0.0
 #group_begin
 	1.0 0.0 0.0 0.0
 	0.0 1.0 0.0 2.5

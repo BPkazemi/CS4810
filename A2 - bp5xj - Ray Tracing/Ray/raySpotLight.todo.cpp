@@ -60,26 +60,40 @@ int RaySpotLight::isInShadow(RayIntersectionInfo& iInfo,RayShape* shape,int& ise
     return (t == -1) ? 1 : 0;
 }
 Point3D RaySpotLight::transparency(RayIntersectionInfo& iInfo,RayShape* shape,Point3D cLimit){
-    Point3D transAccum = Point3D(1.0, 1.0, 1.0);
-    RayIntersectionInfo iShadowInfo;
+    double gridLength = 4.0;
+    float range = 0.1;
+    float incr = range / gridLength;
+    int numSamples = 0;
 
-    Point3D L = ( location - iInfo.iCoordinate ).unit();
-    double length = ( location - iInfo.iCoordinate ).length();
-    Ray3D iRay = Ray3D( iInfo.iCoordinate + L*EPSILON, L );
+    Point3D transAccum = Point3D(0.0, 0.0, 0.0);
 
-    double t = shape->intersect( iRay, iShadowInfo, length );  
-    if( t != -1.0 ) {
-        Point3D kTrans = iShadowInfo.material->transparent;
+    for ( float i = -(range/2.0); i <= (range/2.0); i += incr ) {
+        for ( float j = -(range/2.0); j <= (range/2.0); j += incr ) {
+            numSamples += 1;
+            Point3D curLocation = location + Point3D(i, 0, j);
 
-        if ( kTrans[0] > cLimit.p[0] &&
-                kTrans[1] > cLimit.p[1] &&
-                kTrans[2] > cLimit.p[2] ) {
-            transAccum *= kTrans * transparency( iShadowInfo, shape, cLimit/kTrans );
-        } else {
-            transAccum = Point3D(0.0, 0.0, 0.0);
+            Point3D L = ( curLocation - iInfo.iCoordinate ).unit();
+            double length = ( curLocation - iInfo.iCoordinate ).length();
+            Ray3D iRay = Ray3D( iInfo.iCoordinate + L*EPSILON, L );
+
+            Point3D curTrans = Point3D(1.0, 1.0, 1.0);
+            RayIntersectionInfo iShadowInfo;
+            double t = shape->intersect( iRay, iShadowInfo, length );  
+            if( t != -1.0 ) {
+                Point3D kTrans = iShadowInfo.material->transparent;
+
+                if ( kTrans[0] > cLimit.p[0] &&
+                        kTrans[1] > cLimit.p[1] &&
+                        kTrans[2] > cLimit.p[2] ) {
+                    curTrans *= kTrans * transparency( iShadowInfo, shape, cLimit/kTrans );
+                } else {
+                    curTrans = Point3D(0.0, 0.0, 0.0);
+                }
+            }
+            transAccum += (curTrans);
         }
     }
-    return transAccum;
+    return transAccum / numSamples;
 }
 
 //////////////////
