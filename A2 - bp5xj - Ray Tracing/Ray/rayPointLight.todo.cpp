@@ -35,7 +35,6 @@ Point3D RayPointLight::getSpecular(Point3D cameraPosition,RayIntersectionInfo& i
     return i_specular;
 }
 int RayPointLight::isInShadow(RayIntersectionInfo& iInfo,RayShape* shape,int& isectCount){
-    // TODO: Make use of isectCount
     Point3D L = ( location - iInfo.iCoordinate ).unit();
     double length = ( location - iInfo.iCoordinate ).length();
     Ray3D iRay = Ray3D( iInfo.iCoordinate, L );
@@ -46,9 +45,9 @@ int RayPointLight::isInShadow(RayIntersectionInfo& iInfo,RayShape* shape,int& is
     return (t == -1) ? 1 : 0;
 }
 Point3D RayPointLight::transparency(RayIntersectionInfo& iInfo,RayShape* shape,Point3D cLimit){ 
-    double gridLength = 4.0;
+    double s = 2.0;
     float range = 0.1;
-    float incr = range / gridLength;
+    float incr = range / s;
     int numSamples = 0;
 
     Point3D transAccum = Point3D(0.0, 0.0, 0.0);

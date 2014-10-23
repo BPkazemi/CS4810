@@ -1,0 +1,31 @@
+#material_num 1
+#material
+	0.0 0.0 0.0
+	0.3 0.3 0.3
+	0.27 0.18 0.88
+	1.0 1.0 1.0 128
+	0.0 0.0 0.0
+	1.00
+	-1
+	!!
+#vertex_num 4
+#vertex
+	 2  0  5
+	 0  1  0
+	 0  0
+#vertex
+	 2  0 -5
+	 0  1  0
+	 0  0
+#vertex
+	 2  3  5
+	 0  1  0
+	 0  0
+#vertex
+	 2  3 -5
+	 0  1  0
+	 0  0
+#shape_triangle 0
+	0 3 1
+#shape_triangle 0
+	0 2 3

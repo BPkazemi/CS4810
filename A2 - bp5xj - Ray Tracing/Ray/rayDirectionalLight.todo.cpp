@@ -29,7 +29,6 @@ Point3D RayDirectionalLight::getSpecular(Point3D cameraPosition,RayIntersectionI
     return i_specular;
 }
 int RayDirectionalLight::isInShadow(RayIntersectionInfo& iInfo,RayShape* shape,int& isectCount){
-    // TODO: Make use of isectCount
     Point3D L = -direction;
     Ray3D iRay = Ray3D( iInfo.iCoordinate, L );
 

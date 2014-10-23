@@ -17,9 +17,6 @@ void RayTriangle::initialize(void){
     plane.normal = line1.crossProduct(line2).unit();
 }
 double RayTriangle::intersect(Ray3D ray,RayIntersectionInfo& iInfo,double mx){
-    // TODO: Utilize mx param
-    // TODO: parallel lines test
-    // TODO: Modifying z-axis doesn't seem to change anything
     initialize();
 
     Point3D p0 = ray.position;
@@ -58,7 +55,7 @@ double RayTriangle::intersect(Ray3D ray,RayIntersectionInfo& iInfo,double mx){
     iInfo.material = material;
     iInfo.iCoordinate = p;  
     iInfo.normal = plane.normal;
-    iInfo.texCoordinate; // TODO: texCoordinates will be discussed in upcoming lectures
+    iInfo.texCoordinate; 
 
 	return t;
 }

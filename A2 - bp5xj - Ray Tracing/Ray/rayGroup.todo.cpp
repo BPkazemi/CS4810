@@ -19,7 +19,7 @@ double RayGroup::intersect(Ray3D ray,RayIntersectionInfo& iInfo,double mx){
     Ray3D rayTransform = transform_inv.mult( ray );
     rayTransform.direction = rayTransform.direction.unit();
 
-    /** ~~ BVH Test ~~ 
+    /** ~~ BVH Test ~~ **
     BoundingBox3D bBox = setBoundingBox();
     if( bBox.intersect( rayTransform ) <= 0.0 ) {  // How do we handle the 0 case?
         return -1.0;
@@ -97,7 +97,6 @@ double RayGroup::intersect(Ray3D ray,RayIntersectionInfo& iInfo,double mx){
 
 BoundingBox3D RayGroup::setBoundingBox(void){
     BoundingBox3D bBox = BoundingBox3D( Point3D(0, 0, 0), Point3D(0, 0, 0) );
-    RayShape *curShape;
 
     /* ~~ Accumulate child bounding boxes ~~ */
     for ( int i = 0; i < sNum; i++ ) {

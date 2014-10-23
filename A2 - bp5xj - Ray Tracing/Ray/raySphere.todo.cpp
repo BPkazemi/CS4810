@@ -8,7 +8,6 @@ extern const double EPSILON;
 //  Ray-tracing stuff //
 ////////////////////////
 double RaySphere::intersect(Ray3D ray,RayIntersectionInfo& iInfo,double mx){
-    // TODO: Utilize mx param
     Point3D p0 = ray.position;
     Point3D L = center - p0;
     Point3D v = ray.direction.unit();
@@ -36,13 +35,13 @@ double RaySphere::intersect(Ray3D ray,RayIntersectionInfo& iInfo,double mx){
     iInfo.material = material;
     iInfo.iCoordinate = p;  
     iInfo.normal = (p - center) / (p - center).length();  
-    iInfo.texCoordinate; // TODO: texCoordinates will be discussed in upcoming lectures
+    iInfo.texCoordinate; 
 
 	return t;
 }
 BoundingBox3D RaySphere::setBoundingBox(void){
-    Point3D antiPodal1 = center - Point3D(radius, radius, radius);
-    Point3D antiPodal2 = center + Point3D(radius, radius, radius);
+    Point3D antiPodal1 = center - Point3D(3.0*radius, 3.0*radius, 3.0*radius);
+    Point3D antiPodal2 = center + Point3D(3.0*radius, 3.0*radius, 3.0*radius);
 
     return BoundingBox3D( antiPodal1, antiPodal2 );
 }

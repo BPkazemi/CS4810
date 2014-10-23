@@ -99,7 +99,7 @@ double RayBox::intersect(Ray3D ray,RayIntersectionInfo& iInfo,double mx){
             iInfo.material = material;
             iInfo.iCoordinate = pHit;  
             iInfo.normal = curPl.normal;
-            iInfo.texCoordinate; // TODO: texCoordinates will be discussed in upcoming lectures
+            iInfo.texCoordinate; 
         }
     }
 

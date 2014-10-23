@@ -54,7 +54,6 @@ Ray3D RayScene::GetRay(RayCamera* camera,float i,float j,int width,int height){
 }
 
 Point3D RayScene::GetColor(Ray3D ray,int rDepth,Point3D cLimit){
-    // TODO: In general, things look *slightly* off
     RayIntersectionInfo iInfo;
     Ray3D reflect, refract;
     double t = group->intersect( ray, iInfo, 0.0 );
@@ -105,7 +104,6 @@ Point3D RayScene::GetColor(Ray3D ray,int rDepth,Point3D cLimit){
             i_refraction += this->GetColor( refract, (rDepth-1), cLimit/k_tran) * k_tran;
         }
 
-        // TODO: Color of square looks a little off
         /* ~~ Total Color ~~ */
         Point3D color = i_emissive + i_ambient + i_diffuse_specular + 
             i_reflection + i_refraction;
