@@ -28,6 +28,7 @@ public:
 	// Ray-Tracing stuff //
 	///////////////////////
 	double intersect(Ray3D ray,struct RayIntersectionInfo& iInfo,double mx=-1);
+	double intersectInside(Ray3D ray,struct RayIntersectionInfo& iInfo,double mx=-1);
 	
 	BoundingBox3D setBoundingBox(void);
 

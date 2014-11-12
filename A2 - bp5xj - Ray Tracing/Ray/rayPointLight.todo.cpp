@@ -45,7 +45,7 @@ int RayPointLight::isInShadow(RayIntersectionInfo& iInfo,RayShape* shape,int& is
     return (t == -1) ? 1 : 0;
 }
 Point3D RayPointLight::transparency(RayIntersectionInfo& iInfo,RayShape* shape,Point3D cLimit){ 
-    double s = 2.0;
+    double s = 3.0;
     float range = 0.1;
     float incr = range / s;
     int numSamples = 0;

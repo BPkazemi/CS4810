@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Babak Pourkazemi's Assignment 2 Submission</title>
+</head>
+<body>
+    <div>
+        <h1>bp5xj's Assignment 2 Submission</h1>
+        <h3>Submission Information</h3>
+        <ul>
+            <li>Name: Babak Pourkazemi</li>
+            <li>UVA Computing ID: bp5xj</li>
+            <li>Compiler: g++</li>
+            <li>Environment/platform: Ubuntu 12.04 LTS 32-bit (more details in "setup")</li>
+            <li>Number of late days used: 0</li>
+            <li>
+                Implemented sections
+                <ol>
+                    <li>(1) Ray creation - RayScene::GetRay</li>
+                    <li>(2) Ray casting/intersection - RayGroup::Intersect</li>
+                    <li>(2) Ray-sphere intersection - RaySphere::Intersect</li>
+                    <li>(2) Ray-triangle intersection - RayTriangle::Intersect</li>
+                    <li>(1) Ambient and emissive contributions - RayScene::GetColor</li>
+                    <li>(2) getDiffuse for all lights</li>
+                    <li>(2) getSpecular for all lights</li>
+                    <li>(2) isInShadow for all lights</li>
+                    <li>(1) Diffuse, specular, and shadow contributions - RayScene::GetColor</li>
+                    <li>(2) Transformations - RayGroup::intersect</li>
+                    <li>(1) Reflections - RayScene::GetColor and RayScene::Reflect</li>
+                    <li>(1) Transparent surfaces - RayScene::GetColor and RayScene::Refract</li>
+                    <li>(2) Partial shadows - RayScene::GetColor and transparency for all lights</li>
+                    <li>(2) Refractions - RayScene::GetColor and RayScene::Refract</li>
+                    <li>(1) Ray-box intersection - RayBox::intersect</li>
+                    <li>(1) Soft Shadows - RayPointLight::transparency and RaySpotLight::transparency</li>
+                    <li>(1) Jittered supersampling - RayScene.cpp</li>
+                    <li>(1) 3D scene with spheres, triangles, all 3 light sources, and a transparent surface</li>
+                    <li>(1) Art submission</li>
+                    <li>(1) Ray file submission</li>
+                    <li>Total Implemented: 29 pts</li>
+                </ol>
+                Partially Implemented 
+                <ol>
+                    <li>(5) Accelerated Ray Tracing
+                        <ol>
+                            <li>setBoundingBox for spheres, triangles, and boxes - RayShape::setBoundingBox</li>
+                            <li>Accumluted bounding boxes to create a parent bounding box, then transform it - RayGroup::setBoundingBox</li>
+                            <li>Bounding box intersection (makes use of RayBox intersect) - BoundingBox3D::intersect</li>
+                            <li>Modified RayGroup::intersect to use bounding volumes - RayGroup::intersect</li>
+                        </ol>
+                    </li>
+                    <li>Total Partially Implemented: 5 pts</li>
+                </ol>
+                Unimplemented 
+                <ol>
+                    <li>(3) Triangle and sphere texture mapping</li>
+                    <li>(1) Cylinder intersection</li>
+                    <li>(1) Cone intersection</li>
+                    <li>(2) Perlin noise functions</li>
+                    <li>(1) Real lens simulations</li>
+                    <li>(1) Bump mapping</li>
+                    <li>(2) Octree or BSP accelerations</li>
+                    <li>Total Unimplemented: 11 pts</li>
+                </ol>
+            </li>
+        </ul>
+
+        <h3>Setup</h2>
+        My local machine is a Macbook Air running OS X Yosemite (10.10). I used Vagrant to develop in an Ubuntu Linux environment. Details for setting up Vagrant are below. Note that Vagrant depends on VirtualBox, so VirtualBox must be installed prior to Vagrant.
+        <ol>
+            <li>Install Vagrant as detailed <a href="https://www.vagrantup.com/downloads.html">here</a></li>
+            <li>Run "vagrant init hashicorp/precise32" to get Ubuntu 12.04 LTS 32-bit</li>
+            <li>Run "vagrant up" to setup the vm</li>
+            <li>Run "vagrant ssh" to ssh into the vm</li>
+            <li>Once ssh'd, "sudo apt-get update"</li>
+            <li>Then, "sudo apt-get upgrade" (ignore any GRUB boot loader warnings by ESC'ing out)</li>
+            <li>sudo apt-get install make </li>
+            <li>sudo apt-get install g++</li>
+            <li>Run "make" to compile the Assignment2 executable (and also compile the JPEG library)</li>
+            <li>Type "exit" to leave the vm. Then type "vagrant halt" to shutdown the vm, or "vagrant destroy" to remove all traces of the vm (warning: "vagrant destroy" removes data!).</li>
+        </ol>
+
+        <h3>Notes</h2>
+        <ul>
+            <li>Various todo.cpp files have imported "float.h" to have access to FLT_MIN & FLT_MAX macros</li>
+            <li>Jittered supersampling involved modifying rayScene.cpp::rayTrace to generate the "pixel offset" to cast the ray through before calling getRay. This also meant modifying the getRay calculations to no longer do (i + 0.5)/height since the input params i and j already takes the appropriate calculations into account. The amount of supersampling is defined by n in rayScene.cpp::rayTrace</li>
+            <li>Creating soft shadows meant creating a dummy square of vertices around the light location, across which we cast shadow rays and find their average. If you cast a small number of shadow rays per pixel (which is defined as the variable s in either rayPointLight.todo.cpp::transparency or raySpotLight.todo.cpp::transparency), you end up with some banding. The greater s, the more sampling you do which leads to less banding and better soft shadows. This can be seen below.</li>
+            <li>I made a helper function to do ray-plane intersections for ray-box intersections. This can be found at the top of rayBox.todo.cpp.</li>
+            <li>Of the 5 points for accelerated ray tracing, I'm *really really* close to get the first 3 points (that is, the points not including the code for sorting the shapes based on intersection proximity), and not so close with the latter 2 points. See images below.</li>
+            <li>The code for accelerated ray tracing using bounding volumes is commented out. To use my nearly-complete bounding volume code, uncomment lines 22-27. To use my less-complete code for sorting the shapes based on intersection proximity, uncomment lines 22-69 and comment out lines 71-93.</li>
+        </ul>
+        <h3>Results</h2>
+        <p>Unfortunately, I overwrote the images I had saved at each step. Below are the images that remain.</p>
+        <ol>
+            <li> Rendering test.ray with supersampling (n=3) and soft shadows (s=3)
+                <table border="1">
+                    <tbody><tr>
+                            <td><img src="bp5xj_HTML/test_final.bmp" width="500"></td>
+                        </tr>
+                        <tr>
+                            <td align="center"><code>--rLimit 5 --cLimit 0.0001</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </li>
+            <li> Rendering test.ray with small supersampling (n=1) and small soft shadows (s=1). Note the banding from casting few shadow rays for soft shadows.
+                <table border="1">
+                    <tbody><tr>
+                            <td><img src="bp5xj_HTML/test_final_noss.bmp" width="500"></td>
+                        </tr>
+                        <tr>
+                            <td align="center"><code>--rLimit 5 --cLimit 0.0001</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </li>
+            <li>
+                <div>RayBox intersection with n=5 supersampling and high index of refraction</div>
+                <table border="1">
+                    <tbody><tr>
+                            <td><img src="bp5xj_HTML/ray_box.bmp" width="500"></td>
+                        </tr>
+                        <tr>
+                            <td align="center"><code>--rLimit 5 --cLimit 0.0001</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </li>
+            <li>
+                <div>Soft shadows, before and after implementing with a spot light. Also with a point light. Note the properties of the sphere are square were different than test.ray.</div>
+                <table border="1">
+                    <tbody><tr>
+                            <td><img src="bp5xj_HTML/spot_soft_before.bmp" width="500"></td>
+                            <td><img src="bp5xj_HTML/spot_soft_after.bmp" width="500"></td>
+                            <td><img src="bp5xj_HTML/point_soft_after.bmp" width="500"></td>
+                        </tr>
+                        <tr>
+                            <td align="center"><code>--rLimit 5 --cLimit 0.0001</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </li>
+            <li>
+                <div>Bounding volume hierarchy results with supersampling n=1 and soft shadows s=1 (bvh is partially implemented, resulting in artifacts as seen below)</div>
+                <table border="1">
+                    <tbody><tr>
+                            <td><img src="bp5xj_HTML/bvh.bmp" width="500"></td>
+                        </tr>
+                        <tr>
+                            <td align="center"><code>--rLimit 5 --cLimit 0.0001</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </li>
+            <li>
+                <div>Art Submission: 3 transparent spheres, 2 triangles (4 squares). Super sampling n = 3, soft shadows s = 3, rendering time = too long</div>
+                <table border="1">
+                    <tbody><tr>
+                            <td><img src="bp5xj_HTML/bp5xj.art.1.bmp" width="500"></td>
+                        </tr>
+                        <tr>
+                            <td align="center"><code>--rLimit 3 --cLimit 0.0001</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </li>
+        </ol>
+    </div>
+</body>
+</html>

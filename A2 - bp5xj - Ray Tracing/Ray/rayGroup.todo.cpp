@@ -21,28 +21,27 @@ double RayGroup::intersect(Ray3D ray,RayIntersectionInfo& iInfo,double mx){
 
     /** ~~ BVH Test ~~ **
     BoundingBox3D bBox = setBoundingBox();
-    if( bBox.intersect( rayTransform ) <= 0.0 ) {  // How do we handle the 0 case?
+    if( bBox.intersect( rayTransform ) < 0.0 ) {  // How do we handle the 0 case?
         return -1.0;
     }
     */
 
-    /*
-    // ~~ Find intersections with child bounding volumes ~~ //
+    /* ~~ Find intersections with child bounding volumes ~~ *
     BoundingBox3D sBox;
-    RayShape *curChild;
     map<double, RayShape*> bv_t;
     double curT;
 
     for ( int i = 0; i < sNum; i++ ) {
-        curChild = shapes[i];
-        sBox = curChild->setBoundingBox();
+        sBox = shapes[i]->setBoundingBox();
 
         curT = sBox.intersect( rayTransform );
         if ( curT > 0.0 ) {
-            bv_t[ curT ] = curChild;
+            bv_t[ curT ] = shapes[i];
         }
     }
+    */
 
+    /*
     for ( map<double, RayShape*>::iterator i=bv_t.begin(); i != bv_t.end(); i++ ) {
         if( min_t < (*i).first ) { break; }
 
@@ -69,6 +68,7 @@ double RayGroup::intersect(Ray3D ray,RayIntersectionInfo& iInfo,double mx){
     }
     */
 
+    // Comment out the below section if you're sorting shapes by intersection proximity
     for( int i = 0; i < sNum; i++ ) {
         RayIntersectionInfo iInfoShape;
 

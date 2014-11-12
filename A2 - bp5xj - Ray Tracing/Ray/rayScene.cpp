@@ -848,7 +848,7 @@ int RayScene::RayTrace(const int& width,const int& height,const int& rLimit,cons
 
     int seed = time(NULL);
     srand(seed);
-    int n = 1;
+    int n = 3;  // Reduce n to get faster rendering times!
     float i_s, j_s;
 
 	if(!img.setSize(width,height)){return 0;}
