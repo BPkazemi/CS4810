@@ -3,6 +3,7 @@
 #include <string.h>
 #include <math.h>
 #include <Image/bmp.h>
+#include <time.h>
 #include "rayScene.h"
 #include "rayPointLight.h"
 #include "rayDirectionalLight.h"
@@ -14,8 +15,44 @@
 #include "rayCylinder.h"
 #include "rayTriangle.h"
 #include "rayGroup.h"
+#define PI_ 3.14159265358979323846
 
 const static int BUF_SIZE=500;
+
+/** Jittering info  **/
+struct jitterPoint {
+    float x;
+    float y;
+};
+jitterPoint j2[2] = {
+    {.x=0.25, .y=0.75}, {.x=0.75, .y=0.25}
+};
+jitterPoint j4[4] = {
+    {.x=0.375, .y=0.25}, 
+    {.x=0.125, .y=0.75}, 
+    {.x=0.875, .y=0.25}, 
+    {.x=0.625, .y=0.75}
+};
+jitterPoint j8[8] = {
+    {.x = 0.5625, .y = 0.4375}, 
+    {.x = 0.0625, .y = 0.9375}, 
+    {.x = 0.3125, .y = 0.6875}, 
+    {.x = 0.6875, .y = 0.8125}, 
+    {.x = 0.8125, .y = 0.1875}, 
+    {.x = 0.9375, .y = 0.5625}, 
+    {.x = 0.4375, .y = 0.0625}, 
+    {.x = 0.1875, .y = 0.3125}
+};
+jitterPoint j16[16] = {
+    {.x=0.375, .y=0.4375}, {.x=0.625, .y=0.0625}, 
+    {.x=0.875, .y=0.1875}, {.x=0.125, .y=0.0625},
+    {.x=0.375, .y=0.6875}, {.x=0.875, .y=0.4375}, 
+    {.x=0.625, .y=0.5625}, {.x=0.375, .y=0.9375},
+    {.x=0.625, .y=0.3125}, {.x=0.125, .y=0.5625}, 
+    {.x=0.125, .y=0.8125}, {.x=0.375, .y=0.1875},
+    {.x=0.875, .y=0.9375}, {.x=0.875, .y=0.6875}, 
+    {.x=0.125, .y=0.3125}, {.x=0.625, .y=0.8125}
+};
 
 int RayVertex::read(FILE* fp){
 	double size;
@@ -809,6 +846,49 @@ void RayScene::setUpOpenGL(int cplx){
 
 	group->setUpOpenGL(cplx,1);
 }
+
+void accFrustum(GLdouble left, GLdouble right, GLdouble bottom,
+        GLdouble top, GLdouble near, GLdouble far, GLdouble pixdx, 
+        GLdouble pixdy, GLdouble eyedx, GLdouble eyedy, 
+        GLdouble focus) {
+    GLdouble xwsize, ywsize; 
+    GLdouble dx, dy;
+    GLint viewport[4];
+
+    glGetIntegerv (GL_VIEWPORT, viewport);
+
+    xwsize = right - left;
+    ywsize = top - bottom;
+    dx = -(pixdx*xwsize/(GLdouble) viewport[2] + 
+            eyedx*near/focus);
+    dy = -(pixdy*ywsize/(GLdouble) viewport[3] + 
+            eyedy*near/focus);
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glFrustum (left + dx, right + dx, bottom + dy, top + dy, 
+            near, far);
+    glMatrixMode(GL_MODELVIEW);
+    // glLoadIdentity();
+    glTranslatef (-eyedx, -eyedy, 0.0);
+}
+
+void accPerspective(GLdouble fovy, GLdouble aspect, 
+        GLdouble near, GLdouble far, GLdouble pixdx, GLdouble pixdy,
+        GLdouble eyedx, GLdouble eyedy, GLdouble focus) {
+    GLdouble fov2,left,right,bottom,top;
+    fov2 = ((fovy*PI_) / 180.0) / 2.0;
+    
+    top = near / (cosf(fov2) / sinf(fov2));
+    bottom = -top;
+    right = top * aspect;
+    left = -right;
+    
+    accFrustum (left, right, bottom, top, near, far,
+            pixdx, pixdy, eyedx, eyedy, focus);
+}
+
+
 void RayScene::drawOpenGL(void){
 	camera->drawOpenGL();
 
@@ -819,11 +899,20 @@ void RayScene::drawOpenGL(void){
 	glEnable(GL_LIGHTING);
 	for(int i=0;i<lightNum;i++){lights[i]->drawOpenGL(i);}	
 
-    int ACSIZE = 4.0;
+    int n = 8.0;  // Reduce n to get faster rendering times!
+
     glClear(GL_ACCUM_BUFFER_BIT );
-    for( int s = 0; s < ACSIZE; s++ ) {
+    for( int s = 0; s < n; s++ ) {
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        accPerspective (camera->heightAngle*180.0/PI, 
+                camera->aspectRatio,
+                0.1,  // Near plane
+                50.0,  // Far plane
+                j8[ s ].x, j8[ s ].y,  // Jitter values
+                0.0, 0.0, 1.0);  // Depth-of-field
+
         group->drawOpenGL(-1);
-        glAccum(GL_ACCUM, 1.0/ACSIZE);
+        glAccum(GL_ACCUM, 1.0/n);
     }
     glAccum(GL_RETURN, 1.0);
 }

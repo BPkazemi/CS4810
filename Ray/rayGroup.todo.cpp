@@ -6,7 +6,6 @@
 #endif
 #include "rayGroup.h"
 #include <math.h>
-#define PI_ 3.14159265358979323846
 
 ////////////////////////
 //  Ray-tracing stuff //
@@ -50,7 +49,6 @@ int RayGroup::getOpenGLCallList(void){
     /* Generate a single call list for all children in the raygroup */
     return glGenLists(1);
 }
-
 
 int RayGroup::drawOpenGL(int materialIndex){
     glEnable( GL_BLEND );
