@@ -27,13 +27,6 @@ BoundingBox3D RayTriangle::setBoundingBox(void){
 //////////////////
 // OpenGL stuff //
 //////////////////
-// TODO: Added for transparency sorting
-/*
-RayMaterial* RayTriangle::getShapeMaterial(void) {
-    return material;
-}
-*/
-
 int RayTriangle::drawOpenGL(int materialIndex){
     material->drawOpenGL();
 

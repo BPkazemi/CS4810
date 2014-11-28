@@ -69,9 +69,6 @@ public:
 
 	/** This method generates an OpenGL call list and returns the handle. */
 	int getOpenGLCallList(void);
-
-    /** TODO: Added for transparency sorting **/
-    // virtual RayMaterial* getShapeMaterial(void)=0;
 };
 
 /** This subclass of RayGroup represents a node in the scene graph whose transformation matrix is constant. */
@@ -106,9 +103,6 @@ public:
 	/** This method returns TRUE if the subtree beneath the group represents a static object in the scene. If any of nodes
 	  * in the scene graph beneath are not static, this method will return FALSE. */
 	int isStatic(void);
-
-    /** TODO: Added for transparency sorting **/
-    // virtual RayMaterial* getShapeMaterial(void)=0;
 };
 
 /** This abstract subclass of RayGroup represents a node in the scene graph whose transformation matrix is parametrizable. */

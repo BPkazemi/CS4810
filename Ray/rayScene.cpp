@@ -819,7 +819,14 @@ void RayScene::drawOpenGL(void){
 	glEnable(GL_LIGHTING);
 	for(int i=0;i<lightNum;i++){lights[i]->drawOpenGL(i);}	
 
-    group->drawOpenGL(-1);
+    int ACSIZE = 2.0;
+    glClear(GL_ACCUM_BUFFER_BIT );
+    for( int s = 0; s < ACSIZE; s++ ) {
+        //glClearColor( background[0], background[1], background[2], 1.0  );
+        group->drawOpenGL(-1);
+        glAccum(GL_ACCUM, 1.0/ACSIZE);
+    }
+    glAccum(GL_RETURN, 1.0);
 }
 void RayScene::setCurrentTime(double t,int curveFit){
 	int i;

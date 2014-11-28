@@ -53,8 +53,5 @@ public:
 
 	/** This method returns a value of 1 if the RayShape's geometry doesn't change. */
 	virtual int isStatic(void){return 1;}
-
-    /** TODO: Added for transparency sorting **/
-    // virtual RayMaterial* getShapeMaterial(void)=0;
 };
 #endif // SHAPE_INCLUDED

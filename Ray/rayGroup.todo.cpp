@@ -56,26 +56,6 @@ int RayGroup::drawOpenGL(int materialIndex){
     glEnable( GL_BLEND );
     glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
-    /* Transparency sorting */
-    /* See: http://stackoverflow.com/questions/15831877/rendering-translucent-objects-in-a-complex-scene */
-    /*
-    RayShape* ordShapes[ sNum ];
-    RayShape* curShape;
-    int opaquePointer = 0, transPointer = (sNum)-1;
-    for ( int i = 0; i < sNum; i++ ) {
-        curShape = shapes[i];
-        if( curShape->getShapeMaterial() != NULL ) {
-            ordShapes[0] = curShape;
-        }
-        if ( (curShape->getShapeMaterial())->transparent.p[0] == 0.0 ) {
-            ordShapes[opaquePointer++] = curShape;
-        } else {
-            ordShapes[transPointer--] = curShape;
-        }
-    }
-    glDepthMask( GL_FALSE );  // Depth buffer is read-only 
-    */
-
     /* Draw objects */
     // glMatrixMode( GL_MODELVIEW );
     if ( openGLCallListID == 0 ) {

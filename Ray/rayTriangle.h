@@ -41,8 +41,6 @@ public:
 	//////////////////
 	// OpenGL stuff //
 	//////////////////
-    // RayMaterial* getShapeMaterial(void); // TODO: Added for transparency sorting
-
 	void setUpOpenGL(int cplx,int setCallList);
 
 	int drawOpenGL(int materialIndex);
