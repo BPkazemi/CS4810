@@ -819,10 +819,9 @@ void RayScene::drawOpenGL(void){
 	glEnable(GL_LIGHTING);
 	for(int i=0;i<lightNum;i++){lights[i]->drawOpenGL(i);}	
 
-    int ACSIZE = 2.0;
+    int ACSIZE = 4.0;
     glClear(GL_ACCUM_BUFFER_BIT );
     for( int s = 0; s < ACSIZE; s++ ) {
-        //glClearColor( background[0], background[1], background[2], 1.0  );
         group->drawOpenGL(-1);
         glAccum(GL_ACCUM, 1.0/ACSIZE);
     }
