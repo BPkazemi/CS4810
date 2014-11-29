@@ -924,7 +924,7 @@ void RayScene::drawOpenGL(void){
 
     // glMatrixMode( GL_MODELVIEW );
     const int MIRROR_SIZE = 4.0;
-    glClear( GL_STENCIL_BUFFER_BIT );
+    glClear( GL_STENCIL_BUFFER_BIT | GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
     glEnable( GL_STENCIL_TEST );
         // 1. Set the mirror's pixels to 1 in the stencil buffer
         // -----------------------------------------------------
