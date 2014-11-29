@@ -7,8 +7,6 @@
 #include "rayGroup.h"
 #include <math.h>
 
-#define drawOneLine(x1,y1,x2,y2)  glBegin(GL_LINES);  \
-       glVertex2f ((x1),(y1)); glVertex2f ((x2),(y2)); glEnd();
 
 ////////////////////////
 //  Ray-tracing stuff //
@@ -81,25 +79,46 @@ void mirrorMatrix(GLfloat m[4][4],  // OUT: Resulting matrix
     m[3][3] = 1;
 }
 */
-void mirror( float size ) {
-    glBegin(GL_QUADS);
-        glVertex3f( -size, 0, -size );
-        glVertex3f( -size, 0, size );
-        glVertex3f( size, 0, size );
-        glVertex3f( size, 0, -size );
-    glEnd();
+int RayGroup::drawReflection( int materialIndex ) {
+    glEnable( GL_BLEND );
+    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+
+    /* Draw objects */
+    if ( openGLCallListID == 0 ) {
+        // Draw shapes as before
+        RayShape* curShape;
+        for ( int i = 0; i < sNum; i++ ) {
+            curShape = shapes[i];
+
+            glPushMatrix();
+                glMultMatrixd( (GLdouble *) getMatrix().m );
+                glScalef(1.0, -1.0, 1.0);
+                curShape->drawOpenGL( materialIndex );
+            glPopMatrix();
+        }
+    } else {
+        // Draw the call-list using the call-list ID
+        glNewList( openGLCallListID, GL_COMPILE );
+            RayShape* curShape;
+            for ( int i = 0; i < sNum; i++ ) {
+                curShape = shapes[i];
+
+                glPushMatrix();
+                    glMultMatrixd( (GLdouble *) getMatrix().m );
+                    glScalef(1.0, -1.0, 1.0);
+                    curShape->drawOpenGL( materialIndex );
+                glPopMatrix();
+
+            }
+        glEndList();
+
+        glCallList( openGLCallListID );
+    }
+
+    return -1;
 }
-void mirrorOutline( float size ) {
-    glPushMatrix();
-        glLineWidth(1.0);
-        glRotatef(90.0, 1, 0, 0);
-        drawOneLine( -size, -size, -size, size );
-        drawOneLine( -size, size, size, size );
-        drawOneLine( size, size, size, -size );
-        drawOneLine( size, -size, -size, -size );
-    glPopMatrix();
-}
-void RayGroup::drawScene( int materialIndex ) {
+
+int RayGroup::drawOpenGL(int materialIndex){
     glEnable( GL_BLEND );
     glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
@@ -132,50 +151,7 @@ void RayGroup::drawScene( int materialIndex ) {
 
         glCallList( openGLCallListID );
     }
-}
 
-int RayGroup::drawOpenGL(int materialIndex){
-    // First, render scene without reflections
-    drawScene(materialIndex);
-
-    // glMatrixMode( GL_MODELVIEW );
-    glClear( GL_STENCIL_BUFFER_BIT );
-    glEnable( GL_STENCIL_TEST );
-        // 1. Set the mirror's pixels to 1 in the stencil buffer
-        // -----------------------------------------------------
-        glStencilFunc( GL_ALWAYS, 0x1, 0xFF );
-        glStencilOp( GL_KEEP, GL_KEEP, GL_REPLACE );
-        glStencilMask(0xFF);
-
-        // Use the mirror to set the stencil buffer, but don't draw the mirror
-        glColorMask(0,0,0,0);
-        glDepthMask(GL_FALSE);
-        mirror(1.0);
-        glDepthMask(GL_TRUE);
-
-        // 2. Reflect the scene, only drawing in the valid stencil area
-        // ------------------------------------------------------------
-        glColorMask(1,1,1,1);
-        glStencilFunc( GL_EQUAL, 1, 0xFF );
-        glStencilMask( 0x00 );  // Disable stencil buffer writing
-
-        // Reflect the scene 
-        glPushMatrix();
-            glDisable(GL_CULL_FACE);
-            glScalef(-1.0, -1.0, 1.0);
-            drawScene( materialIndex );
-        glPopMatrix();
-        
-        // Draw mirror's outline
-        // glDepthMask(GL_FALSE);
-        mirrorOutline(1.0);
-        // glDepthMask(GL_TRUE);
-    glDisable( GL_STENCIL_TEST );
-
-    // Restore original states
-    glEnable( GL_CULL_FACE );
-    glDepthMask( GL_TRUE );
-    glDisable(GL_BLEND);
 	return -1; // TODO: return something real
 }
 

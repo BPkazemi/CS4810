@@ -16,6 +16,8 @@
 #include "rayTriangle.h"
 #include "rayGroup.h"
 #define PI_ 3.14159265358979323846
+#define drawOneLine(x1,y1,x2,y2)  glBegin(GL_LINES);  \
+       glVertex2f ((x1),(y1)); glVertex2f ((x2),(y2)); glEnd();
 
 const static int BUF_SIZE=500;
 
@@ -889,6 +891,24 @@ void accPerspective(GLdouble fovy, GLdouble aspect,
 }
 
 
+void mirror( float size ) {
+    glBegin(GL_QUADS);
+        glVertex3f( -size, 0, -size );
+        glVertex3f( -size, 0, size );
+        glVertex3f( size, 0, size );
+        glVertex3f( size, 0, -size );
+    glEnd();
+}
+void mirrorOutline( float size ) {
+    glPushMatrix();
+        glLineWidth(2.0);
+        glRotatef(90.0, 1, 0, 0);
+        drawOneLine( -size, -size, -size, size );
+        drawOneLine( -size, size, size, size );
+        drawOneLine( size, size, size, -size );
+        drawOneLine( size, -size, -size, -size );
+    glPopMatrix();
+}
 void RayScene::drawOpenGL(void){
 	camera->drawOpenGL();
 
@@ -899,7 +919,46 @@ void RayScene::drawOpenGL(void){
 	glEnable(GL_LIGHTING);
 	for(int i=0;i<lightNum;i++){lights[i]->drawOpenGL(i);}	
 
+    // First, render scene without reflections
     group->drawOpenGL(-1);
+
+    // glMatrixMode( GL_MODELVIEW );
+    const int MIRROR_SIZE = 4.0;
+    glClear( GL_STENCIL_BUFFER_BIT );
+    glEnable( GL_STENCIL_TEST );
+        // 1. Set the mirror's pixels to 1 in the stencil buffer
+        // -----------------------------------------------------
+        glStencilFunc( GL_ALWAYS, 0x1, 0xFF );
+        glStencilOp( GL_KEEP, GL_KEEP, GL_REPLACE );
+        glStencilMask(0xFF);
+
+        // Use the mirror to set the stencil buffer, but don't draw the mirror
+        glColorMask(0,0,0,0);
+        glDepthMask(GL_FALSE);
+        mirror( MIRROR_SIZE );
+        glDepthMask(GL_TRUE);
+
+        // 2. Reflect the scene, only drawing in the valid stencil area
+        // ------------------------------------------------------------
+        glColorMask(1,1,1,1);
+        glStencilFunc( GL_EQUAL, 1, 0xFF );
+        glStencilMask( 0x00 );  // Disable stencil buffer writing
+
+        // Reflect the scene 
+        glDisable(GL_CULL_FACE);
+        group->drawReflection(-1);
+        
+        // Draw mirror's outline
+        // glDepthMask(GL_FALSE);
+        mirrorOutline( MIRROR_SIZE );
+        // glDepthMask(GL_TRUE);
+    glDisable( GL_STENCIL_TEST );
+    group->drawOpenGL(-1);
+
+    // Restore original states
+    glEnable( GL_CULL_FACE );
+    glDepthMask( GL_TRUE );
+    glDisable(GL_BLEND);
     /**** Anti-aliasing *****/
     // TODO: Turn me on!
     /*

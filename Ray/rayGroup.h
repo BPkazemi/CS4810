@@ -63,10 +63,10 @@ public:
 	//////////////////
 	// OpenGL stuff //
 	//////////////////
-    void drawScene(int materialIndex);
 	void setUpOpenGL(int cplx,int setCallList);
 
 	int drawOpenGL(int materialIndex);
+    int drawReflection(int materialIndex);
 
 	/** This method generates an OpenGL call list and returns the handle. */
 	int getOpenGLCallList(void);
