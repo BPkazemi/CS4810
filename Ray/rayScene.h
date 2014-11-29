@@ -206,6 +206,9 @@ public:
 
 	void RayView(const int& width,const int& height,const int& cplx,const int& factor=RayKeyData::MATRIX);
 
+    /** This method uses the stencil buffer to reflect the scene **/
+    void drawWithMirror(void);
+
 	/** This method calls the OpenGL commands for drawing the scene. */
 	void drawOpenGL(void);
 

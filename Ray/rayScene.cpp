@@ -909,16 +909,7 @@ void mirrorOutline( float size ) {
         drawOneLine( size, -size, -size, -size );
     glPopMatrix();
 }
-void RayScene::drawOpenGL(void){
-	camera->drawOpenGL();
-
-    /* Added to set the global ambient light level */
-    GLfloat light_ambient[] = { ambient.p[0], ambient.p[1], ambient.p[2] };
-    glLightModelfv( GL_LIGHT_MODEL_AMBIENT, light_ambient );
-
-	glEnable(GL_LIGHTING);
-	for(int i=0;i<lightNum;i++){lights[i]->drawOpenGL(i);}	
-
+void RayScene::drawWithMirror(void) {
     // First, render scene without reflections
     group->drawOpenGL(-1);
 
@@ -949,19 +940,26 @@ void RayScene::drawOpenGL(void){
         group->drawReflection(-1);
         
         // Draw mirror's outline
-        // glDepthMask(GL_FALSE);
         mirrorOutline( MIRROR_SIZE );
-        // glDepthMask(GL_TRUE);
     glDisable( GL_STENCIL_TEST );
-    group->drawOpenGL(-1);
+    group->drawOpenGL(-1);  // Necessary!
 
     // Restore original states
     glEnable( GL_CULL_FACE );
     glDepthMask( GL_TRUE );
     glDisable(GL_BLEND);
+}
+void RayScene::drawOpenGL(void){
+	camera->drawOpenGL();
+
+    /* Added to set the global ambient light level */
+    GLfloat light_ambient[] = { ambient.p[0], ambient.p[1], ambient.p[2] };
+    glLightModelfv( GL_LIGHT_MODEL_AMBIENT, light_ambient );
+
+	glEnable(GL_LIGHTING);
+	for(int i=0;i<lightNum;i++){lights[i]->drawOpenGL(i);}	
+
     /**** Anti-aliasing *****/
-    // TODO: Turn me on!
-    /*
     int n = 4.0;  // Reduce n to get more FPS!
     glClear(GL_ACCUM_BUFFER_BIT );
     for( int s = 0; s < n; s++ ) {
@@ -973,12 +971,16 @@ void RayScene::drawOpenGL(void){
                 j4[ s ].x, j4[ s ].y,  // Jitter values
                 0.0, 0.0, 1.0);  // Depth-of-field
 
+        /* No mirror support */
         group->drawOpenGL(-1);
+
+        /* Mirror using the stencil buffer */
+        // TODO: Turn me on!
+        // drawWithMirror();
 
         glAccum(GL_ACCUM, 1.0/n);
     }
     glAccum(GL_RETURN, 1.0);
-    */
 }
 void RayScene::setCurrentTime(double t,int curveFit){
 	int i;
