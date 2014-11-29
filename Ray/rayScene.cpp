@@ -892,29 +892,34 @@ void accPerspective(GLdouble fovy, GLdouble aspect,
 void RayScene::drawOpenGL(void){
 	camera->drawOpenGL();
 
-    /* Modified to set the global ambient light level */
+    /* Added to set the global ambient light level */
     GLfloat light_ambient[] = { ambient.p[0], ambient.p[1], ambient.p[2] };
     glLightModelfv( GL_LIGHT_MODEL_AMBIENT, light_ambient );
 
 	glEnable(GL_LIGHTING);
 	for(int i=0;i<lightNum;i++){lights[i]->drawOpenGL(i);}	
 
-    int n = 8.0;  // Reduce n to get faster rendering times!
-
+    group->drawOpenGL(-1);
+    /**** Anti-aliasing *****/
+    // TODO: Turn me on!
+    /*
+    int n = 4.0;  // Reduce n to get more FPS!
     glClear(GL_ACCUM_BUFFER_BIT );
     for( int s = 0; s < n; s++ ) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         accPerspective (camera->heightAngle*180.0/PI, 
                 camera->aspectRatio,
-                0.1,  // Near plane
-                50.0,  // Far plane
-                j8[ s ].x, j8[ s ].y,  // Jitter values
+                1.0,  // Near plane
+                40.0,  // Far plane
+                j4[ s ].x, j4[ s ].y,  // Jitter values
                 0.0, 0.0, 1.0);  // Depth-of-field
 
         group->drawOpenGL(-1);
+
         glAccum(GL_ACCUM, 1.0/n);
     }
     glAccum(GL_RETURN, 1.0);
+    */
 }
 void RayScene::setCurrentTime(double t,int curveFit){
 	int i;

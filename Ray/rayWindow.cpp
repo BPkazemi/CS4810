@@ -150,7 +150,6 @@ void RayWindow::MouseFunction( int button, int state, int x, int y ){
 /** This function is called when one of the mouse buttons is depressed and the mouse is moved. */
 void RayWindow::MotionFunction( int x, int y ){
 	Point2D d=mouse.move(x,y);
-
 	if(mouse.middleDown || (mouse.leftDown && mouse.shiftDown)){
 		scene->camera->rotateUp(center,0.01*d[0]);
 		scene->camera->rotateRight(center,0.01*d[1]);
@@ -368,7 +367,7 @@ void RayWindow::RayView(RayScene* s,int width,int height,int cplx){
 
 	// Initialize the OpenGL context
 	glutInit(&argc,argv);
-	glutInitDisplayMode( GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH | GLUT_ACCUM );
+	glutInitDisplayMode( GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH | GLUT_ACCUM | GLUT_STENCIL );
 	glutCreateWindow("Intro to CG");
 	glutInitWindowSize(width,height);
 	glutInitWindowPosition(0,0);

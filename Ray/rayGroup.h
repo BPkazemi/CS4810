@@ -63,6 +63,7 @@ public:
 	//////////////////
 	// OpenGL stuff //
 	//////////////////
+    void drawScene(int materialIndex);
 	void setUpOpenGL(int cplx,int setCallList);
 
 	int drawOpenGL(int materialIndex);
