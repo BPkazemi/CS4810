@@ -914,7 +914,7 @@ void RayScene::drawWithMirror(void) {
     group->drawOpenGL(-1);
 
     // glMatrixMode( GL_MODELVIEW );
-    const int MIRROR_SIZE = 4.0;
+    const int MIRROR_SIZE = 8.0;
     glClear( GL_STENCIL_BUFFER_BIT | GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
     glEnable( GL_STENCIL_TEST );
         // 1. Set the mirror's pixels to 1 in the stencil buffer
@@ -976,7 +976,7 @@ void RayScene::drawOpenGL(void){
 
         /* Mirror using the stencil buffer */
         // TODO: Turn me on!
-        // drawWithMirror();
+        drawWithMirror();
 
         glAccum(GL_ACCUM, 1.0/n);
     }

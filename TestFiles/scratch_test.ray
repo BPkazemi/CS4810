@@ -1,19 +1,19 @@
 /** Table, as vertices **/
 #vertex_num 4
 #vertex
-	 4  2  8
+	 4  4  10
 	 0  1  0
 	 1  1
 #vertex
-	 4  2  -8
+	 4  4  -10
 	 0  1  0
 	 1  0
 #vertex
-	 -4  2  -8
+	 -4  4  -10
 	 0  1  0
 	 1  0
 #vertex
-	 -4  2  8
+	 -4  4  10
 	 0  1  0
 	 1  0
 #shape_triangle 1

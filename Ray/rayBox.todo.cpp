@@ -21,8 +21,6 @@ int RayBox::drawOpenGL(int materialIndex){
     material->drawOpenGL();
     glDisable(GL_CULL_FACE);
 
-    // Fix current missing face
-    // Try a more sensible approach
     glPushMatrix();
         glTranslatef( center.p[0], center.p[1], center.p[2] );
         // 2 faces along the z-axis

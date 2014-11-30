@@ -1,5 +1,5 @@
 #texture_num 1
-#texture ./TestFiles/check.jpg
+#texture ./TestFiles/brick.jpg
 #material_num 1
 #material
 	0.0 0.0 0.0
@@ -8,7 +8,7 @@
 	1.0 1.0 1.0 100
 	0.0 0.0 0.0
 	1.05
-	-1
+	0
 	!!
 #vertex_num 16
 #vertex
