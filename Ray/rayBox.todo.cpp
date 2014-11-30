@@ -18,40 +18,70 @@ BoundingBox3D RayBox::setBoundingBox(void){
 // OpenGL stuff //
 //////////////////
 int RayBox::drawOpenGL(int materialIndex){
-    // TODO: Convert to using matrices (push/pop)
     material->drawOpenGL();
     glDisable(GL_CULL_FACE);
 
-    // 2 faces along the z-axis
-    glTranslatef( center.p[0], center.p[1], center.p[2] - (length.p[2]/2.0));
-    glRectf( center.p[0] - (length.p[0]/2.0), center.p[1] - (length.p[1]/2.0), center.p[0] + (length.p[0]/2.0), center.p[1] + (length.p[1]/2.0) );
-    glTranslatef( -center.p[0], -center.p[1], -(center.p[2] - (length.p[2]/2.0)));
+    // Fix current missing face
+    // Try a more sensible approach
+    glPushMatrix();
+        glTranslatef( center.p[0], center.p[1], center.p[2] );
+        // 2 faces along the z-axis
+        glPushMatrix();
+            glTranslatef( 0, 0, -(length.p[2]/2.0));
+            glRectf( 
+                    - (length.p[0]/2.0), - (length.p[1]/2.0), 
+                    + (length.p[0]/2.0), + (length.p[1]/2.0) 
+                    );
+        glPopMatrix();
 
-    glTranslatef( center.p[0], center.p[1], center.p[2] + (length.p[2]/2.0));
-    glRectf( center.p[0] - (length.p[0]/2.0), center.p[1] - (length.p[1]/2.0), center.p[0] + (length.p[0]/2.0), center.p[1] + (length.p[1]/2.0) );
-    glTranslatef( -center.p[0], -center.p[1], -(center.p[2] + (length.p[2]/2.0)));
+        glPushMatrix();
+            glTranslatef( 0, 0, (length.p[2]/2.0));
+            glRectf( 
+                    - (length.p[0]/2.0), - (length.p[1]/2.0), 
+                    + (length.p[0]/2.0), + (length.p[1]/2.0) 
+                    );
+        glPopMatrix();
 
-    // 2 faces along the x-axis
-    glRotatef(90.0, 0.0, 1.0, 0.0);
-    glTranslatef( center.p[0], center.p[1], center.p[2] - (length.p[0]/2.0) );
-    glRectf( center.p[2] - (length.p[2]/2.0), center.p[1] - (length.p[1]/2.0), center.p[2] + (length.p[2]/2.0), center.p[1] + (length.p[1]/2.0) );
-    glTranslatef( -center.p[0], -center.p[1], -(center.p[2] - (length.p[0]/2.0)) );
+        // 2 faces along the x-axis
+        glPushMatrix();
+            glTranslatef( -(length.p[0])/2.0, 0, 0 );
+            glRotatef(90.0, 0.0, 1.0, 0.0);
+            glRectf( 
+                    - (length.p[2]/2.0), - (length.p[1]/2.0), 
+                    + (length.p[2]/2.0), + (length.p[1]/2.0) 
+                    );
+        glPopMatrix();
 
-    glTranslatef( center.p[0], center.p[1], center.p[2] + (length.p[0]/2.0) );
-    glRectf( center.p[2] - (length.p[2]/2.0), center.p[1] - (length.p[1]/2.0), center.p[2] + (length.p[2]/2.0), center.p[1] + (length.p[1]/2.0) );
-    glTranslatef( -center.p[0], -center.p[1], -(center.p[2] + (length.p[0]/2.0)) );
-    glRotatef(-90.0, 0.0, 1.0, 0.0);
+        glPushMatrix();
+            glTranslatef( (length.p[0])/2.0, 0, 0 );
+            glRotatef(90.0, 0.0, 1.0, 0.0);
+            glRectf( 
+                    - (length.p[2]/2.0), - (length.p[1]/2.0), 
+                    + (length.p[2]/2.0), + (length.p[1]/2.0) 
+                    );
+        glPopMatrix();
 
-    // 2 faces along the y-axis
-    glRotatef(90.0, 1.0, 0.0, 0.0);
-    glTranslatef( center.p[0], center.p[1], center.p[2] - (length.p[1]/2.0) );
-    glRectf( center.p[0] - (length.p[0]/2.0), center.p[2] - (length.p[2]/2.0), center.p[0] + (length.p[0]/2.0), center.p[2] + (length.p[2]/2.0) );
-    glTranslatef( -center.p[0], -center.p[1], -(center.p[2] - (length.p[1]/2.0)) );
+        // 2 faces along the y-axis
+        glPushMatrix();
+            glTranslatef( 0, -length.p[1]/2.0, 0 );
+            glRotatef(-90.0, 1.0, 0.0, 0.0);
+            // glTranslatef( center.p[0], center.p[1], center.p[2] - (length.p[1]/2.0) );
+            glRectf( 
+                    - (length.p[0]/2.0), - (length.p[2]/2.0), 
+                    + (length.p[0]/2.0), + (length.p[2]/2.0) 
+                    );
+        glPopMatrix();
 
-    glTranslatef( center.p[0], center.p[1], center.p[2] + (length.p[1]/2.0) );
-    glRectf( center.p[0] - (length.p[0]/2.0), center.p[2] - (length.p[2]/2.0), center.p[0] + (length.p[0]/2.0), center.p[2] + (length.p[2]/2.0) );
-    glTranslatef( -center.p[0], -center.p[1], -(center.p[2] + (length.p[1]/2.0)) );
-    glRotatef(-90.0, 1.0, 0.0, 0.0);
+        glPushMatrix();
+            glTranslatef( 0, length.p[1]/2.0, 0 );
+            glRotatef(-90.0, 1.0, 0.0, 0.0);
+            // glTranslatef( center.p[0], center.p[1], center.p[2] + (length.p[1]/2.0) );
+            glRectf( 
+                    - (length.p[0]/2.0), - (length.p[2]/2.0), 
+                    + (length.p[0]/2.0), + (length.p[2]/2.0) 
+                    );
+        glPopMatrix();
+    glPopMatrix();
 
     glEnable(GL_CULL_FACE);
 

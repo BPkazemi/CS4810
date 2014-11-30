@@ -967,7 +967,7 @@ void RayScene::drawOpenGL(void){
         accPerspective (camera->heightAngle*180.0/PI, 
                 camera->aspectRatio,
                 1.0,  // Near plane
-                40.0,  // Far plane
+                90.0,  // Far plane
                 j4[ s ].x, j4[ s ].y,  // Jitter values
                 0.0, 0.0, 1.0);  // Depth-of-field
 
