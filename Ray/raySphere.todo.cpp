@@ -20,11 +20,6 @@ BoundingBox3D RaySphere::setBoundingBox(void){
 //////////////////
 int RaySphere::drawOpenGL(int materialIndex){
     material->drawOpenGL();
-    if( material->transparent.p[0] == 0.0 ) {
-        glDepthMask( GL_TRUE );
-    } else {
-        glDepthMask( GL_FALSE );
-    }
 
     GLUquadricObj *qobj = gluNewQuadric();
     // TODO: If you want texture mapping, see ch. 11 for gluQuadricTexture()

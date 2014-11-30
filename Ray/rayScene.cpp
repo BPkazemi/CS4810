@@ -960,7 +960,7 @@ void RayScene::drawOpenGL(void){
 	for(int i=0;i<lightNum;i++){lights[i]->drawOpenGL(i);}	
 
     /**** Anti-aliasing *****/
-    int n = 4.0;  // Reduce n to get more FPS!
+    int n = 2.0;  // Reduce n to get more FPS!
     glClear(GL_ACCUM_BUFFER_BIT );
     for( int s = 0; s < n; s++ ) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -968,14 +968,18 @@ void RayScene::drawOpenGL(void){
                 camera->aspectRatio,
                 1.0,  // Near plane
                 90.0,  // Far plane
-                j4[ s ].x, j4[ s ].y,  // Jitter values
+                j2[ s ].x, j2[ s ].y,  // Jitter values
                 0.0, 0.0, 1.0);  // Depth-of-field
+
+        /** --- Mirror'ing --- **/
 
         /* No mirror support */
         // group->drawOpenGL(-1);
 
         /* Mirror using the stencil buffer */
         drawWithMirror();
+
+        /** ------------------ **/
 
         glAccum(GL_ACCUM, 1.0/n);
     }

@@ -1,5 +1,5 @@
 #texture_num 1
-#texture ./TestFiles/wood.jpg
+#texture ./TestFiles/glass.jpg
 #material_num 2
 #material
 	0.0 0.0 0.0
@@ -15,31 +15,27 @@
 	0.0 0.0 0.0
 	1.0 1.0 1.0
 	1.0  1.0  1.0 128.0
-	0.0 0.75 0.75
+	0.3 0.75 0.75
 	1.05
 	0
 	!!
 #vertex_num 4
 #vertex
-	 2  4  5
+	 2  4.05  5
 	 0  1  0
      0  0
 #vertex
-	 2  4  -5
+	 2  4.05  -5
 	 0  1  0
 	 0  1
 #vertex
-	 -2  4  -5
+	 -2  4.05  -5
 	 0  1  0
      1  1
 #vertex
-	 -2  4  5
+	 -2  4.05  5
 	 0  1  0
 	 1  0
-#shape_triangle 1
-    0 1 2
-#shape_triangle 1
-    0 2 3
 #shape_box 0
 	1.75 2.0 4.75
 	0.5 4.0 0.5
@@ -52,3 +48,7 @@
 #shape_box 0
 	-1.75 2.0 4.75
 	0.5 4.0 0.5
+#shape_triangle 1
+    0 1 2
+#shape_triangle 1
+    0 2 3

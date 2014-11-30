@@ -30,7 +30,6 @@ BoundingBox3D RayTriangle::setBoundingBox(void){
 int RayTriangle::drawOpenGL(int materialIndex){
     material->drawOpenGL();
 
-    // TODO: Doesn't fly
     if( material->transparent.p[0] == 0.0 ) {
         glDepthMask( GL_TRUE );  // Opaque objects enable depth buffer test
     } else {
@@ -50,6 +49,6 @@ int RayTriangle::drawOpenGL(int materialIndex){
         glNormal3f( v[2]->normal.p[0], v[2]->normal.p[1], v[2]->normal.p[2]  );
         glVertex3f( v[2]->position.p[0], v[2]->position.p[1], v[2]->position.p[2] );
     glEnd();
-
+    glDepthMask( GL_TRUE );
 	return -1;
 }
