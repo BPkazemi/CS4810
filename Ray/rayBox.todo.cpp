@@ -64,7 +64,7 @@ int RayBox::drawOpenGL(int materialIndex){
         // 2 faces along the y-axis
         glPushMatrix();
             glTranslatef( 0, -length.p[1]/2.0, 0 );
-            glRotatef(-90.0, 1.0, 0.0, 0.0);
+            glRotatef(90.0, 1.0, 0.0, 0.0);
             // glTranslatef( center.p[0], center.p[1], center.p[2] - (length.p[1]/2.0) );
             glRectf( 
                     - (length.p[0]/2.0), - (length.p[2]/2.0), 
@@ -74,7 +74,7 @@ int RayBox::drawOpenGL(int materialIndex){
 
         glPushMatrix();
             glTranslatef( 0, length.p[1]/2.0, 0 );
-            glRotatef(-90.0, 1.0, 0.0, 0.0);
+            glRotatef(90.0, 1.0, 0.0, 0.0);
             // glTranslatef( center.p[0], center.p[1], center.p[2] + (length.p[1]/2.0) );
             glRectf( 
                     - (length.p[0]/2.0), - (length.p[2]/2.0), 
