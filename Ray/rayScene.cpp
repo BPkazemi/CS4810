@@ -972,10 +972,9 @@ void RayScene::drawOpenGL(void){
                 0.0, 0.0, 1.0);  // Depth-of-field
 
         /* No mirror support */
-        group->drawOpenGL(-1);
+        // group->drawOpenGL(-1);
 
         /* Mirror using the stencil buffer */
-        // TODO: Turn me on!
         drawWithMirror();
 
         glAccum(GL_ACCUM, 1.0/n);
