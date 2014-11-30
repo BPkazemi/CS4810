@@ -1,0 +1,93 @@
+#texture_num 1
+#texture ./bp5xj_HTML/Textures/brick.jpg
+#material_num 1
+#material
+	0.0 0.0 0.0
+	0.3 0.3 0.3
+	0.5 0.1 0.1
+	1.0 1.0 1.0 100
+	0.0 0.0 0.0
+	1.05
+	0
+	!!
+#vertex_num 16
+#vertex
+	-8  15  -8
+	 0  1  0
+	 0  0
+#vertex
+	 8  15  -8
+	 0  1  0
+	 0  1
+#vertex
+	 8  0  -8
+	 0  1  0
+	 1  1
+#vertex
+	-8  0  -8
+	 0  1  0
+	 1  0
+#vertex
+	-8  15  8
+	 0  1  0
+	 0  0
+#vertex
+	 8  15  8
+	 0  1  0
+	 0  1
+#vertex
+	 8  0  8
+	 0  1  0
+	 1  1
+#vertex
+	-8  0  8
+	 0  1  0
+	 1  0
+#vertex
+	 -8  15  -8
+	 0  1  0
+	 0  0
+#vertex
+	 -8  15  8
+	 0  1  0
+	 0  1
+#vertex
+	 -8  0  8
+	 0  1  0
+	 1  1
+#vertex
+	 -8  0  -8
+	 0  1  0
+	 1  0
+#vertex
+	 8  15  -8
+	 0  1  0
+	 0  0
+#vertex
+	 8  15  8
+	 0  1  0
+	 0  1
+#vertex
+	 8  0  8
+	 0  1  0
+	 1  1
+#vertex
+	 8  0  -8
+	 0  1  0
+	 1  0
+#shape_triangle 0
+	2 1 0
+#shape_triangle 0
+    3 2 0
+#shape_triangle 0
+	4 5 6
+#shape_triangle 0
+	4 6 7
+#shape_triangle 0
+    8 9 10
+#shape_triangle 0
+    8 10 11
+#shape_triangle 0
+    14 13 12
+#shape_triangle 0
+    15 14 12

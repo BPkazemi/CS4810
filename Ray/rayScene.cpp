@@ -977,6 +977,7 @@ void RayScene::drawOpenGL(void){
         // group->drawOpenGL(-1);
 
         /* Mirror using the stencil buffer */
+        // NOTE: UNCOMMENT THIS LINE IF YOU DON'T WANT THE MIRROR!!!!!
         drawWithMirror();
 
         /** ------------------ **/
