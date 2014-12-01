@@ -942,7 +942,7 @@ void RayScene::drawWithMirror(void) {
         // Draw mirror's outline
         mirrorOutline( MIRROR_SIZE );
     glDisable( GL_STENCIL_TEST );
-    group->drawOpenGL(-1);  // Necessary!
+    group->drawOpenGL(-1);  
 
     // Restore original states
     glEnable( GL_CULL_FACE );
@@ -977,7 +977,7 @@ void RayScene::drawOpenGL(void){
         // group->drawOpenGL(-1);
 
         /* Mirror using the stencil buffer */
-        // NOTE: UNCOMMENT THIS LINE IF YOU DON'T WANT THE MIRROR!!!!!
+        // NOTE: COMMENT OUT THIS LINE IF YOU DON'T WANT THE MIRROR!!!!!
         drawWithMirror();
 
         /** ------------------ **/

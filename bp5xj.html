@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Babak Pourkazemi's Assignment 3 Submission</title>
+</head>
+<body>
+    <div>
+        <h1>bp5xj's Assignment 3 Submission</h1>
+        <h3>Submission Information</h3>
+        <ul>
+            <li>Name: Babak Pourkazemi</li>
+            <li>UVA Computing ID: bp5xj</li>
+            <li>Compiler: clang</li>
+            <li>Environment/platform: Mac OS X Yosemite 10.10.1</li>
+            <li>Number of late days used: 5</li>
+            <li>
+                Implemented sections
+                <ol>
+                    <li>(1) Ray camera - RayCamera::drawOpenGL</li>
+                    <li>(1) Draw scene-graph nodes - RayGroup::drawOpenGL</li>
+                    <li>(1) Ray-sphere - RaySphere::drawOpenGL</li>
+                    <li>(2) Ray-triangle - RayTriangle::drawOpenGL</li>
+                    <li>(2) Draw material properties - RayMaterial::drawOpenGL</li>
+                    <li>(3) Draw light sources - RayDirectionalLight::drawOpenGL + RayPointLight::drawOpenGL + RaySpotLight::drawOpenGL</li>
+                    <li>(2) Transformations - RayGroup::drawOpenGL</li>
+                    <li>(2) Call lists - RayGroup::getOpenGLCallList + RayGroup::drawOpenGL</li>
+                    <li>(3) Texture mapping - RayTriangle::drawOpenGL + rayMaterial::drawOpenGL + rayTexture::setUpOpenGL</li>
+                    <li>(1) RayBox - RayBox::drawOpenGL</li>
+                    <li>(1) RayCylinder - RayCylinder::drawOpenGL</li>
+                    <li>(1) RayCone - RayCone::drawOpenGL</li>
+                    <li>(2) Anti-aliasing with accum buffer - RayScene.cpp::drawOpenGL</li>
+                    <li>Generate a .ray file describing a room scene with:</li>
+                    <ul>
+                        <li>(1) Four walls, a floor, a ceiling</li>
+                        <li>(3) A table, several chairs</li>
+                        <li>(1) Transparent, "glass" tabletop</li>
+                        <li>(1) Three texture-mapped surfaces (walls, ceiling, table)</li>
+                        <li>(1) Three point-light sources</li>
+                        <li>(2) A mirror (the floor is a mirror!)</li>
+                    </ul>
+                    <li>(1) Art submission</li>
+                    <li>(1) Ray file submission</li>
+                    <li>Total Implemented: 33 pts</li>
+                </ol>
+                Unimplemented 
+                <ol>
+                    <li>(2) Luxo Jr. style lamp</li>
+                    <li>(2) Mouse control</li>
+                    <li>(2) Shadows</li>
+                    <li>(2) Objects that respond to mouse clicks</li>
+                    <li>(1) Utilizing materialIndex params</li>
+                    <li>(1) Allow ray-tracing from the same perspective as the RayCamera</li>
+                    <li>Total Unimplemented: 10 pts</li>
+                </ol>
+            </li>
+        </ul>
+
+        <h3>Setup</h2>
+        My local machine is a Macbook Air running OS X Yosemite (10.10.1). All the code modifications recommended in the Assignment 3 guidelines were made. Also, as recommended from a piazza post, I've replaced several '#include &ltGL/glut.h&gt' with '#include &ltGLUT/glut.h&gt.'
+
+        <h3>Notes</h2>
+        <ul>
+            <li>Antialiasing with jittered supersampling involved modifying rayScene.cpp::drawOpenGL to support the accum buffer. The amount of supersampling is defined by the variable "n" in rayScene.cpp::drawOpenGL. Jitter values, helper functions (accPerspective & accFrustum), and useful MACROS (PI, drawOneLine) were taken from the Red Book and are defined at the top of rayScene.cpp.</li>
+            <li>Mirror'ing with the stencil buffer occurs in rayScene.cpp::drawOpenGL. I made the two helper functions mirror() and mirrorOutline() to draw a square mirror plane and a square mirror outline, respectively. mirror() is used to set the stencil buffer's bits when reflecting, and outline() provides a visual outline of the mirror for the user. Mirroring with the stencil buffer is an imperfect art, and it's difficult to correctly reflected a complex scene's colors. See the below images.</li>
+        </ul>
+        <h3>Results</h2>
+        <ol>
+            <li> Rendering test.ray. ~60 fps.
+                <table border="1">
+                    <tbody><tr>
+                            <td><img src="bp5xj_HTML/ProgressImages/original.png" width="500"></td>
+                        </tr>
+                        <tr>
+                            <td align="center"><code>--width 500 --height 500 --cmplx 128.0</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </li>
+            <li> Rendering without anti-aliasing (left) and with anti-aliasing (right, n=8 jitters per pixel). Note the triangle edges.
+                <table border="1">
+                    <tbody>
+                        <tr>
+                            <td><img src="bp5xj_HTML/ProgressImages/preAA.png" width="500"></td>
+                            <td><img src="bp5xj_HTML/ProgressImages/postAA.png" width="500"></td>
+                        </tr>
+                        <tr>
+                            <td align="center"><code>--width 500 --height 500 --cmplx 10.0</code></td>
+                            <td align="center"><code>--width 500 --height 500 --cmplx 10.0</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </li>
+            <li>
+                <div>Rendering allShapes.ray to show support for various shapes.</div>
+                <table border="1">
+                    <tbody><tr>
+                            <td><img src="bp5xj_HTML/ProgressImages/allShapes.png" width="500"></td>
+                        </tr>
+                        <tr>
+                            <td align="center"><code>--width 500 --height 500 --cmplx 64.0</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </li>
+            <li>
+                <div>Rendering the mirror with two spheres, one centered at (0,0,0) and the other at (0, 1, 1).</div>
+                <table border="1">
+                    <tbody><tr>
+                            <td><img src="bp5xj_HTML/ProgressImages/stencilMirror.png" width="500"></td>
+                        </tr>
+                        <tr>
+                            <td align="center"><code>--width 500 --height 500 --cmplx 10.0</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </li>
+            <li>
+                <div>My art submission and .ray submission. 3 textures: brick walls, a tiled roof, and a glass tabletop. The floor is a mirror, which I thought was a cool effect. The tabletop is transparent. The scene has 1 directional light and 3 point lights with a *slight* blue tint, which is why the mirror appears blue (the mirror is also darkened). It's difficult to capture reflected colors correctly with a scene as complex as this one. For example, the reflected chairs and table appear too dark. Note the very low (1-10) fps. Also shown are the "lines only" images of the room to show the reflection across the mirror.</div>
+                <table border="1">
+                    <tbody><tr>
+                            <td><img src="bp5xj_HTML/bp5xj.art.1.png" width="500"></td>
+                            <td><img src="bp5xj_HTML/ProgressImages/room_alternate.png" width="500"></td>
+                            <td><img src="bp5xj_HTML/ProgressImages/room_lines1.png" width="500"></td>
+                            <td><img src="bp5xj_HTML/ProgressImages/room_lines2.png" width="500"></td>
+                        </tr>
+                        <tr>
+                            <td align="center"><code>--width 500 --height 500 --cmplx 128.0</code></td>
+                            <td align="center"><code>--width 500 --height 500 --cmplx 128.0</code></td>
+                            <td align="center"><code>--width 500 --height 500 --cmplx 128.0</code></td>
+                            <td align="center"><code>--width 500 --height 500 --cmplx 128.0</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </li>
+            <li>
+                <div>An alternate room with alternate views. Only difference is a non-transparent tabletop.</div>
+                <table border="1">
+                    <tbody><tr>
+                            <td><img src="bp5xj_HTML/ProgressImages/room2.png" width="500"></td>
+                            <td><img src="bp5xj_HTML/ProgressImages/room2_alternate.png" width="500"></td>
+                        </tr>
+                        <tr>
+                            <td align="center"><code>--width 500 --height 500 --cmplx 128.0</code></td>
+                            <td align="center"><code>--width 500 --height 500 --cmplx 128.0</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </li>
+        </ol>
+    </div>
+</body>
+</html>
